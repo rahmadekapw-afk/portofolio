@@ -38,7 +38,7 @@ const LandingPage = ({ showWelcome, setShowWelcome }) => {
               <span className="block text-sm pb-4 text-gray-500 text-center dark:text-gray-400">
                 © 2026{" "}
                 <a href="www.eki.my.id" className="hover:underline">
-                  EkiZR™
+                  wardhani
                 </a>
                 . All Rights Reserved.
               </span>
@@ -59,7 +59,7 @@ const ProjectPageLayout = () => (
         <span className="block text-sm pb-4 text-gray-500 text-center dark:text-gray-400">
           © 2026{" "}
           <a href="www.eki.my.id" className="hover:underline">
-            EkiZR™
+            wardhani
           </a>
           . All Rights Reserved.
         </span>
