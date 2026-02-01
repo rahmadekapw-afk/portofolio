@@ -4,6 +4,10 @@ export default {
 	darkMode: 'class',
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
+				oswald: ['Oswald', 'sans-serif'],
+			},
 			backdropBlur: {
 				sm: '4px',
 			},

@@ -3,59 +3,37 @@ import { Github, Linkedin, Mail, ExternalLink, Instagram, Sparkles } from "lucid
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
+import { useLanguage } from "../context/LanguageContext";
+
 // Memoized Components
-const StatusBadge = memo(() => (
-  <div className="inline-block animate-float lg:mx-0" data-aos="zoom-in" data-aos-delay="400">
-    <div className="relative group">
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
-      <div className="relative px-3 sm:px-4 py-2 rounded-full bg-black/40 backdrop-blur-xl border border-white/10">
-        <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text sm:text-sm text-[0.7rem] font-medium flex items-center">
-          <Sparkles className="sm:w-4 sm:h-4 w-3 h-3 mr-2 text-blue-400" />
-          Siap Berinovasi
+const StatusBadge = memo(() => {
+  const { t } = useLanguage();
+  return (
+    <div className="inline-block" data-aos="zoom-in" data-aos-delay="400">
+      <div className="px-4 py-2 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm">
+        <span className="text-xs font-bold uppercase tracking-widest text-black dark:text-white flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+          {t('hero.greeting')}
         </span>
       </div>
     </div>
-  </div>
-));
+  );
+});
 
-const MainTitle = memo(() => (
-  <div className="space-y-2" data-aos="fade-up" data-aos-delay="600">
-    <h1 className="text-5xl sm:text-6xl md:text-6xl lg:text-6xl xl:text-7xl font-bold tracking-tight">
-      <span className="relative inline-block">
-        <span className="absolute -inset-2 bg-gradient-to-r from-primary to-secondary blur-2xl opacity-20"></span>
-        <span className="relative bg-gradient-to-r from-primary via-blue-500 to-secondary bg-clip-text text-transparent">
-          Fullstack
-        </span>
-      </span>
-      <br />
-      <span className="relative inline-block mt-2">
-        <span className="absolute -inset-2 bg-gradient-to-r from-primary to-secondary blur-2xl opacity-20"></span>
-        <span className="relative bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          Developer
-        </span>
-      </span>
-    </h1>
-  </div>
-));
+
 
 const TechStack = memo(({ tech }) => (
-  <div className="px-4 py-2 hidden sm:block rounded-full bg-white/5 backdrop-blur-sm border border-white/10 text-sm text-gray-300 hover:bg-white/10 transition-colors">
+  <div className="px-4 py-2 rounded-none border-b-2 border-gray-200 dark:border-zinc-800 text-sm font-bold uppercase tracking-wider text-black dark:text-white hover:border-black dark:hover:border-white transition-colors">
     {tech}
   </div>
 ));
 
 const CTAButton = memo(({ href, text, icon: Icon }) => (
   <a href={href}>
-    <button className="group relative w-[160px]">
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-secondary rounded-xl opacity-50 blur-md group-hover:opacity-90 transition-all duration-700"></div>
-      <div className="relative h-11 bg-black/90 backdrop-blur-xl rounded-lg border border-white/10 leading-none overflow-hidden">
-        <div className="absolute inset-0 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 bg-gradient-to-r from-primary/20 to-secondary/20"></div>
-        <span className="absolute inset-0 flex items-center justify-center gap-2 text-sm group-hover:gap-3 transition-all duration-300">
-          <span className="bg-gradient-to-r from-gray-200 to-white bg-clip-text text-transparent font-medium z-10">
-            {text}
-          </span>
-          <Icon className={`w-4 h-4 text-gray-200 ${text === 'Contact' ? 'group-hover:translate-x-1' : 'group-hover:rotate-45'} transform transition-all duration-300 z-10`} />
-        </span>
+    <button className="group relative w-[160px] h-12 bg-black dark:bg-white overflow-hidden rounded-full transition-all hover:scale-105 active:scale-95">
+      <div className="absolute inset-0 flex items-center justify-center gap-2 text-white dark:text-black font-oswald font-bold uppercase tracking-widest z-10">
+        {text}
+        <Icon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
       </div>
     </button>
   </a>
@@ -63,11 +41,8 @@ const CTAButton = memo(({ href, text, icon: Icon }) => (
 
 const SocialLink = memo(({ icon: Icon, link }) => (
   <a href={link} target="_blank" rel="noopener noreferrer">
-    <button className="group relative p-3">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-300"></div>
-      <div className="relative rounded-xl bg-black/50 backdrop-blur-xl p-2 flex items-center justify-center border border-white/10 group-hover:border-white/20 transition-all duration-300">
-        <Icon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
-      </div>
+    <button className="group p-3 rounded-full border border-gray-200 dark:border-zinc-800 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300">
+      <Icon className="w-5 h-5 transition-colors" />
     </button>
   </a>
 ));
@@ -76,7 +51,7 @@ const SocialLink = memo(({ icon: Icon, link }) => (
 const TYPING_SPEED = 100;
 const ERASING_SPEED = 50;
 const PAUSE_DURATION = 2000;
-const WORDS = ["Network & Telecom Student", "Tech Enthusiast"];
+const WORDS = ["Network Engineer", "Tech Enthusiast"]; // Updated words for professional look
 const TECH_STACK = ["React", "Javascript", "Node.js", "Tailwind"];
 const SOCIAL_LINKS = [
   { icon: Github, link: "https://github.com/EkiZR" },
@@ -85,6 +60,7 @@ const SOCIAL_LINKS = [
 ];
 
 const Home = () => {
+  const { t } = useLanguage();
   const [text, setText] = useState("")
   const [isTyping, setIsTyping] = useState(true)
   const [wordIndex, setWordIndex] = useState(0)
@@ -98,7 +74,6 @@ const Home = () => {
       AOS.init({
         once: true,
         offset: 10,
-
       });
     };
 
@@ -141,48 +116,57 @@ const Home = () => {
   }, [handleTyping]);
 
   return (
-    <div className="min-h-screen bg-background overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%]" id="Home">
+    <div className="min-h-screen bg-white dark:bg-black overflow-hidden px-[5%] sm:px-[5%] lg:px-[10%]" id="Home">
       <div className={`relative z-10 transition-all duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
-        <div className="container mx-auto min-h-screen">
-          <div className="flex flex-col lg:flex-row items-center justify-center h-screen md:justify-between gap-0 sm:gap-12 lg:gap-20">
+        <div className="container mx-auto min-h-screen flex flex-col justify-center py-20 pt-32">
+          <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-12 lg:gap-20">
+
             {/* Left Column */}
-            <div className="w-full lg:w-1/2 space-y-6 sm:space-y-8 text-left lg:text-left order-1 lg:order-1 lg:mt-0"
+            <div className="w-full lg:w-1/2 space-y-8 text-left order-1"
               data-aos="fade-right"
               data-aos-delay="200">
-              <div className="space-y-4 sm:space-y-6">
+              <div className="space-y-6">
                 <StatusBadge />
-                <MainTitle />
+                <div className="space-y-1" data-aos="fade-up" data-aos-delay="600">
+                  <h1 className="text-5xl sm:text-6xl md:text-8xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white leading-[0.9]">
+                    {t('hero.title')}
+                    <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-b from-black to-gray-400 dark:from-white dark:to-zinc-500">
+                      {t('hero.subtitle')}
+                    </span>
+                  </h1>
+                </div>
 
-                {/* Typing Effect */}
+                {/* Typing Effect - Minimalist */}
                 <div className="h-8 flex items-center" data-aos="fade-up" data-aos-delay="800">
-                  <span className="text-xl md:text-2xl bg-gradient-to-r from-gray-500 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent font-light">
+                  <span className="text-lg md:text-xl font-mono text-gray-500 dark:text-gray-400 uppercase tracking-widest">
                     {text}
                   </span>
-                  <span className="w-[3px] h-6 bg-gradient-to-t from-primary to-secondary ml-1 animate-blink"></span>
+                  <span className="w-2 h-5 bg-black dark:bg-white ml-2 animate-blink"></span>
                 </div>
 
                 {/* Description */}
-                <p className="text-base md:text-lg text-foreground/70 max-w-xl leading-relaxed font-light"
+                <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-xl leading-relaxed font-medium"
                   data-aos="fade-up"
                   data-aos-delay="1000">
-                  Menciptakan Website Yang Inovatif, Fungsional, dan User-Friendly untuk Solusi Digital.
+                  {t('hero.description')}
                 </p>
 
                 {/* Tech Stack */}
-                <div className="flex flex-wrap gap-3 justify-start" data-aos="fade-up" data-aos-delay="1200">
+                <div className="flex flex-wrap gap-4 justify-start" data-aos="fade-up" data-aos-delay="1200">
                   {TECH_STACK.map((tech, index) => (
                     <TechStack key={index} tech={tech} />
                   ))}
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-row gap-3 w-full justify-start" data-aos="fade-up" data-aos-delay="1400">
-                  <CTAButton href="#Portofolio" text="Proyek" icon={ExternalLink} />
-                  <CTAButton href="#Contact" text="Kontak" icon={Mail} />
+                <div className="flex flex-row gap-4 w-full justify-start mt-8" data-aos="fade-up" data-aos-delay="1400">
+                  <CTAButton href="#Portofolio" text={t('hero.ctaProjects')} icon={ExternalLink} />
+                  <CTAButton href="#Contact" text={t('hero.ctaContact')} icon={Mail} />
                 </div>
 
                 {/* Social Links */}
-                <div className="hidden sm:flex gap-4 justify-start" data-aos="fade-up" data-aos-delay="1600">
+                <div className="hidden sm:flex gap-4 justify-start mt-8" data-aos="fade-up" data-aos-delay="1600">
                   {SOCIAL_LINKS.map((social, index) => (
                     <SocialLink key={index} {...social} />
                   ))}
@@ -190,41 +174,26 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Right Column - WebM Video */}
-            <div className="w-full py-0 md:py-[10%] sm:py-0 lg:w-1/2 h-[260px] sm:h-[400px] lg:h-[600px] xl:h-[750px] relative flex items-center justify-center order-2 lg:order-2  mt-5 sm:mt-0"
-              onMouseEnter={() => setIsHovering(true)}
-              onMouseLeave={() => setIsHovering(false)}
+            {/* Right Column - Image/Graphic */}
+            <div className="w-full lg:w-1/2 relative flex items-center justify-center order-2 lg:order-2"
               data-aos="fade-left"
               data-aos-delay="600">
-              <div className="relative w-full opacity-90">
-                <div className={`absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-3xl blur-3xl transition-all duration-700 ease-in-out ${isHovering ? "opacity-50 scale-105" : "opacity-20 scale-100"
-                  }`}>
-                </div>
+              <div className="relative w-full aspect-square max-w-[500px]">
+                {/* Solid geometric shape instead of blur blob */}
+                <div className="absolute inset-0 bg-gray-100 dark:bg-zinc-900 rounded-full scale-90"></div>
 
-                <div className={`relative lg:left-12 z-10 w-full opacity-90 transform transition-transform duration-500 ${isHovering ? "scale-105" : "scale-100"
-                  }`}>
-                  <img
-                    src="Animation1.gif"
-                    alt="Developer Animation"
-                    className={`w-full h-full object-contain transition-all duration-500 ${isHovering
-                      ? "scale-[95%] sm:scale-[90%] md:scale-[90%] lg:scale-[90%] rotate-2"
-                      : "scale-[90%] sm:scale-[80%] md:scale-[80%] lg:scale-[80%]"
-                      }`}
-                  />
-                </div>
-
-                <div className={`absolute inset-0 pointer-events-none transition-all duration-700 ${isHovering ? "opacity-50" : "opacity-20"
-                  }`}>
-                  <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-primary/10 to-secondary/10 blur-3xl animate-[pulse_6s_cubic-bezier(0.4,0,0.6,1)_infinite] transition-all duration-700 ${isHovering ? "scale-110" : "scale-100"
-                    }`}>
-                  </div>
-                </div>
+                {/* Image with grayscale filter */}
+                <img
+                  src="Animation1.gif"
+                  alt="Developer Animation"
+                  className="relative z-10 w-full h-full object-contain transition-all duration-500 hover:scale-105"
+                />
               </div>
             </div>
+
           </div>
         </div>
       </div>
-
     </div>
   );
 };

@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Share2, User, Mail, MessageSquare, Send, Phone, MapPin } from "lucide-react";
+import { Share2, User, Mail, MessageSquare, Send } from "lucide-react";
 import SocialLinks from "../components/SocialLinks";
 import Komentar from "../components/Commentar";
 import Swal from "sweetalert2";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import axios from "axios";
+import { useLanguage } from "../context/LanguageContext";
 
 const ContactPage = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,8 +31,8 @@ const ContactPage = () => {
     setIsSubmitting(true);
 
     Swal.fire({
-      title: 'Mengirim Pesan...',
-      html: 'Harap tunggu sebentar',
+      title: t('contact.sending'),
+      html: 'Please wait',
       allowOutsideClick: false,
       didOpen: () => { Swal.showLoading(); }
     });
@@ -46,17 +48,17 @@ const ContactPage = () => {
       await axios.post(formSubmitUrl, submitData);
 
       Swal.fire({
-        title: 'Berhasil!',
-        text: 'Pesan Anda telah terkirim!',
+        title: t('contact.successTitle'),
+        text: t('contact.successMessage'),
         icon: 'success',
-        confirmButtonColor: '#6366f1',
+        confirmButtonColor: '#000',
       });
 
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       Swal.fire({
-        title: 'Gagal!',
-        text: 'Terjadi kesalahan, coba lagi nanti.',
+        title: t('contact.errorTitle'),
+        text: t('contact.errorMessage'),
         icon: 'error',
       });
     } finally {
@@ -65,112 +67,111 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen pb-20 pt-10 px-[5%] md:px-[10%] overflow-hidden" id="Contact">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-full -z-10">
-        <div className="absolute top-[10%] left-[-10%] w-[300px] h-[300px] bg-indigo-500/10 blur-[120px] rounded-full"></div>
-        <div className="absolute bottom-[10%] right-[-10%] w-[300px] h-[300px] bg-purple-500/10 blur-[120px] rounded-full"></div>
-      </div>
+    <div className="relative min-h-screen pb-20 pt-20 px-[5%] md:px-[10%] overflow-hidden bg-gray-50 dark:bg-black text-black dark:text-white" id="Contact">
 
-      {/* Header Section */}
-      <div className="text-center mb-16">
+      {/* Header Section - Nike Style: Big, Bold, Uppercase */}
+      <div className="text-center mb-20">
         <h2
           data-aos="fade-down"
-          className="text-4xl md:text-6xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500"
+          className="text-6xl md:text-8xl font-oswald font-black uppercase tracking-tighter mb-4 text-black dark:text-white"
         >
-          Mari Terhubung
+          {t('contact.title')}
         </h2>
         <p
           data-aos="fade-up"
-          className="text-slate-400 max-w-xl mx-auto text-base md:text-lg leading-relaxed"
+          className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto text-base font-medium tracking-wide uppercase"
         >
-          Punya ide luar biasa atau sekadar ingin menyapa? Pintu digital saya selalu terbuka untuk Anda.
+          {t('contact.subtitle')}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[45%_55%] gap-12 items-start">
 
-        {/* Left Side: Contact Info & Form */}
+        {/* Left Side: Contact Form - Improved 'Nike' Style */}
         <div
           data-aos="fade-right"
-          className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden group"
+          className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 p-8 md:p-12 shadow-sm relative overflow-hidden group"
         >
-          {/* Accent Line */}
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-50"></div>
-
-          <div className="flex justify-between items-start mb-8">
+          <div className="flex justify-between items-start mb-10">
             <div>
-              <h3 className="text-2xl font-bold text-white mb-2">Hubungi Saya</h3>
-              <p className="text-slate-400 text-sm">Silakan isi formulir di bawah ini.</p>
+              <h3 className="text-3xl font-oswald font-bold uppercase text-black dark:text-white mb-1">
+                {t('contact.formTitle')}
+              </h3>
+              <p className="text-gray-400 text-sm font-medium">{t('contact.dropMessage')}</p>
             </div>
-            <div className="p-3 bg-indigo-500/10 rounded-2xl">
-              <Share2 className="w-6 h-6 text-indigo-400" />
+            <div className="p-3 bg-black dark:bg-white rounded-full">
+              <Share2 className="w-5 h-5 text-white dark:text-black" />
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="relative group">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
-              <input
-                type="text"
-                name="name"
-                placeholder="Nama Lengkap"
-                value={formData.name}
-                onChange={handleChange}
-                disabled={isSubmitting}
-                className="w-full py-4 pl-12 pr-4 bg-white/[0.05] rounded-xl border border-white/10 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none text-white placeholder:text-slate-500"
-                required
-              />
+              <label className="text-xs font-bold uppercase text-gray-500 mb-2 block tracking-wider">{t('contact.nameLabel')}</label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  name="name"
+                  placeholder={t('contact.namePlaceholder')}
+                  value={formData.name}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                  className="w-full py-4 pl-12 pr-4 bg-gray-100 dark:bg-zinc-800/50 rounded-none border-b-2 border-transparent focus:border-black dark:focus:border-white transition-all outline-none text-black dark:text-white placeholder:text-gray-400 font-bold uppercase tracking-wider text-sm"
+                  required
+                />
+              </div>
             </div>
 
             <div className="relative group">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
-              <input
-                type="email"
-                name="email"
-                placeholder="Alamat Email"
-                value={formData.email}
-                onChange={handleChange}
-                disabled={isSubmitting}
-                className="w-full py-4 pl-12 pr-4 bg-white/[0.05] rounded-xl border border-white/10 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none text-white placeholder:text-slate-500"
-                required
-              />
+              <label className="text-xs font-bold uppercase text-gray-500 mb-2 block tracking-wider">{t('contact.emailLabel')}</label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder={t('contact.emailPlaceholder')}
+                  value={formData.email}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                  className="w-full py-4 pl-12 pr-4 bg-gray-100 dark:bg-zinc-800/50 rounded-none border-b-2 border-transparent focus:border-black dark:focus:border-white transition-all outline-none text-black dark:text-white placeholder:text-gray-400 font-bold uppercase tracking-wider text-sm"
+                  required
+                />
+              </div>
             </div>
 
             <div className="relative group">
-              <MessageSquare className="absolute left-4 top-5 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
-              <textarea
-                name="message"
-                placeholder="Pesan Anda..."
-                value={formData.message}
-                onChange={handleChange}
-                disabled={isSubmitting}
-                className="w-full min-h-[150px] py-4 pl-12 pr-4 bg-white/[0.05] rounded-xl border border-white/10 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none text-white placeholder:text-slate-500 resize-none"
-                required
-              />
+              <label className="text-xs font-bold uppercase text-gray-500 mb-2 block tracking-wider">{t('contact.messageLabel')}</label>
+              <div className="relative">
+                <MessageSquare className="absolute left-4 top-5 w-5 h-5 text-gray-400" />
+                <textarea
+                  name="message"
+                  placeholder={t('contact.messagePlaceholder')}
+                  value={formData.message}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                  className="w-full min-h-[150px] py-4 pl-12 pr-4 bg-gray-100 dark:bg-zinc-800/50 rounded-none border-b-2 border-transparent focus:border-black dark:focus:border-white transition-all outline-none text-black dark:text-white placeholder:text-gray-400 font-bold uppercase tracking-wider text-sm resize-none"
+                  required
+                />
+              </div>
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
+              className="w-full py-4 bg-black dark:bg-white text-white dark:text-black font-oswald font-bold text-lg uppercase tracking-widest rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50 mt-4"
             >
               {isSubmitting ? (
-                <span className="animate-pulse">Mengirim...</span>
+                <span className="animate-pulse">{t('contact.sending')}</span>
               ) : (
                 <>
                   <Send className="w-5 h-5" />
-                  Kirim Pesan
+                  {t('contact.sendButton')}
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-10 pt-8 border-t border-white/5">
-            <div className="flex justify-center gap-6">
-              <SocialLinks />
-            </div>
-          </div>
+
         </div>
 
         {/* Right Side: Comments Section */}
@@ -178,12 +179,11 @@ const ContactPage = () => {
           data-aos="fade-left"
           className="h-full"
         >
-          <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-3xl p-2 md:p-6 shadow-2xl h-full mt-[-2px]">
-            <Komentar />
-          </div>
+          <Komentar />
         </div>
 
       </div>
+
     </div>
   );
 };

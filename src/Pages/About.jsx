@@ -1,45 +1,38 @@
 import React, { useEffect, memo, useMemo } from "react"
-import { FileText, Code, Award, Globe, ArrowUpRight, Sparkles } from "lucide-react"
+import { FileText, Code, Award, Globe, ArrowUpRight } from "lucide-react"
+import { useLanguage } from "../context/LanguageContext"
 import AOS from "aos"
 import "aos/dist/aos.css"
 
 // ================= HEADER =================
-const Header = memo(() => (
-  <div className="text-center lg:mb-8 mb-2 px-[5%]">
-    <h2
-      className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-[#a855f7]"
-      data-aos="zoom-in-up"
-      data-aos-duration="600"
-    >
-      About Me
-    </h2>
-
-    <p
-      className="mt-2 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-base sm:text-lg flex items-center justify-center gap-2"
-      data-aos="zoom-in-up"
-      data-aos-duration="800"
-    >
-      <Sparkles className="w-5 h-5 text-purple-400" />
-      Transforming ideas into digital experiences
-      <Sparkles className="w-5 h-5 text-purple-400" />
-    </p>
-  </div>
-))
+const Header = memo(() => {
+  const { t } = useLanguage();
+  return (
+    <div className="text-center lg:mb-16 mb-10 px-[5%]">
+      <h2
+        className="text-6xl md:text-8xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white"
+        data-aos="fade-down"
+        data-aos-duration="600"
+      >
+        {t('about.title')}
+      </h2>
+      <div className="w-24 h-2 bg-black dark:bg-white mx-auto mt-4"></div>
+    </div>
+  );
+})
 
 // ================= PROFILE IMAGE =================
 const ProfileImage = memo(() => (
   <div className="flex justify-end items-center sm:p-12 p-0">
-    <div className="relative group" data-aos="fade-up" data-aos-duration="1000">
-      <div className="absolute -inset-6 opacity-[25%] z-0 hidden sm:block">
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-indigo-500 to-purple-600 rounded-full blur-2xl animate-spin-slower" />
-        <div className="absolute inset-0 bg-gradient-to-l from-fuchsia-500 via-rose-500 to-pink-600 rounded-full blur-2xl animate-pulse-slow opacity-50" />
-      </div>
+    <div className="relative group" data-aos="zoom-in" data-aos-duration="1000">
+      {/* Solid Geometric Background */}
+      <div className="absolute top-4 right-4 w-full h-full bg-gray-200 dark:bg-zinc-800 -z-10 transition-transform group-hover:translate-x-2 group-hover:translate-y-2"></div>
 
-      <div className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full overflow-hidden shadow-[0_0_40px_rgba(120,119,198,0.3)]">
+      <div className="relative w-72 h-72 sm:w-96 sm:h-96 overflow-hidden border-2 border-black dark:border-white transition-all duration-500">
         <img
           src="/Photo.jpeg"
           alt="Profile"
-          className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover"
           loading="lazy"
         />
       </div>
@@ -48,18 +41,16 @@ const ProfileImage = memo(() => (
 ))
 
 // ================= STAT CARD =================
-const StatCard = memo(({ icon: Icon, color, value, label, description, animation }) => (
+const StatCard = memo(({ icon: Icon, value, label, description, animation }) => (
   <div data-aos={animation} data-aos-duration="1300">
-    <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-lg rounded-2xl p-6 border border-black/5 dark:border-white/10 hover:scale-105 transition-all duration-300">
-      <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-10`} />
-
-      <div className="flex items-center justify-between mb-4">
-        <Icon className="w-10 h-10 text-primary dark:text-white" />
-        <span className="text-4xl font-bold text-gray-900 dark:text-white">{value}</span>
+    <div className="bg-white dark:bg-black p-8 border-2 border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors duration-300 group">
+      <div className="flex items-center justify-between mb-6">
+        <Icon className="w-12 h-12 text-black dark:text-white group-hover:text-white dark:group-hover:text-black transition-colors" />
+        <span className="text-5xl font-oswald font-bold tracking-tight">{value}</span>
       </div>
 
-      <p className="text-sm uppercase tracking-wider text-gray-600 dark:text-gray-300">{label}</p>
-      <p className="text-xs text-gray-500 dark:text-gray-400 flex justify-between items-center">
+      <p className="text-lg font-bold uppercase tracking-wider mb-2">{label}</p>
+      <p className="text-sm text-gray-500 group-hover:text-gray-400 dark:text-gray-400 dark:group-hover:text-gray-600 flex justify-between items-center">
         {description}
         <ArrowUpRight className="w-4 h-4" />
       </p>
@@ -69,6 +60,7 @@ const StatCard = memo(({ icon: Icon, color, value, label, description, animation
 
 // ================= MAIN COMPONENT =================
 const AboutPage = () => {
+  const { t } = useLanguage();
   const { totalProjects, totalCertificates, YearExperience } = useMemo(() => {
     const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]")
     const storedCertificates = JSON.parse(localStorage.getItem("certificates") || "[]")
@@ -94,15 +86,13 @@ const AboutPage = () => {
   const statsData = [
     {
       icon: Code,
-      color: "from-[#6366f1] to-[#a855f7]",
       value: totalProjects,
-      label: "Total Projects",
+      label: t('about.statProjects'),
       description: "Web projects completed",
       animation: "fade-right",
     },
     {
       icon: Award,
-      color: "from-[#a855f7] to-[#6366f1]",
       value: totalCertificates,
       label: "Certificates",
       description: "Skills & achievements",
@@ -110,54 +100,44 @@ const AboutPage = () => {
     },
     {
       icon: Globe,
-      color: "from-[#6366f1] to-[#a855f7]",
       value: YearExperience,
-      label: "Years Experience",
+      label: t('about.statYears'),
       description: "Learning & building",
       animation: "fade-left",
     },
   ]
 
   return (
-    <div className="pb-[10%] text-white px-[5%] lg:px-[10%] mt-10" id="About">
+    <div className="pb-20 pt-20 text-black dark:text-white px-[5%] lg:px-[10%]" id="About">
       <Header />
 
-      <div className="grid lg:grid-cols-2 gap-12 items-center mt-10">
+      <div className="grid lg:grid-cols-2 gap-16 items-center mt-10">
         <div>
           <h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4"
+            className="text-4xl md:text-5xl font-oswald font-bold uppercase mb-8 leading-tight"
             data-aos="fade-right"
           >
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-[#a855f7]">
-              Hello, I'm
-            </span>
-            <span className="block text-gray-700 dark:text-gray-200 mt-2">
-              Rahmad Eka Putra Wardhani
-            </span>
+            Rahmad Eka Putra Wardhani
           </h2>
 
           <p
-            className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed text-justify"
+            className="text-lg md:text-xl text-gray-800 dark:text-gray-300 leading-relaxed text-justify font-medium"
             data-aos="fade-right"
             data-aos-duration="1200"
           >
-            Saya Rahmad Eka Putra Wardhani, mahasiswa Universitas Amikom Yogyakarta semester 6
-            yang berfokus pada pengembangan web. Saya memiliki ketertarikan besar dalam
-            membangun aplikasi web yang modern, responsif, dan user-friendly. Dengan
-            semangat belajar yang tinggi, saya terus mengembangkan kemampuan sebagai Web
-            Developer serta mengikuti perkembangan teknologi terkini.
+            {t('about.intro')}
           </p>
 
-          <div className="flex gap-4 mt-6">
+          <div className="flex flex-wrap gap-4 mt-10">
             <a href="https://drive.google.com" target="_blank">
-              <button className="px-6 py-3 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-lg flex items-center gap-2 hover:scale-105 transition">
+              <button className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black font-oswald font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-all active:scale-95 flex items-center gap-2">
                 <FileText className="w-5 h-5" /> Download CV
               </button>
             </a>
 
             <a href="#Portofolio">
-              <button className="px-6 py-3 border border-[#a855f7] rounded-lg text-[#a855f7] hover:bg-[#a855f7]/10 transition flex items-center gap-2">
-                <Code className="w-5 h-5" /> View Projects
+              <button className="px-8 py-4 border-2 border-black dark:border-white text-black dark:text-white font-oswald font-bold uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all active:scale-95 flex items-center gap-2">
+                <Code className="w-5 h-5" /> {t('projects.viewProject')}
               </button>
             </a>
           </div>
@@ -166,25 +146,11 @@ const AboutPage = () => {
         <ProfileImage />
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6 mt-16">
+      <div className="grid md:grid-cols-3 gap-8 mt-24">
         {statsData.map((stat) => (
           <StatCard key={stat.label} {...stat} />
         ))}
       </div>
-
-      <style jsx>{`
-        @keyframes spin-slower {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        .animate-spin-slower {
-          animation: spin-slower 8s linear infinite;
-        }
-        .animate-pulse-slow {
-          animation: pulse 3s infinite;
-        }
-      `}</style>
     </div>
   )
 }

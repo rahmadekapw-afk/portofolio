@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, Globe } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { useLanguage } from "../context/LanguageContext";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState("Home");
     const { theme, toggleTheme } = useTheme();
+    const { language, toggleLanguage, t } = useLanguage();
 
     const navItems = [
-        { href: "#Home", label: "Home" },
-        { href: "#About", label: "About" },
-        { href: "#Portofolio", label: "Portofolio" },
-        { href: "#Contact", label: "Contact" },
+        { href: "#Home", label: t('nav.home') },
+        { href: "#About", label: t('nav.about') },
+        { href: "#Portofolio", label: t('nav.projects') },
+        { href: "#Contact", label: t('nav.contact') },
     ];
 
     useEffect(() => {
@@ -44,7 +46,7 @@ const Navbar = () => {
         window.addEventListener("scroll", handleScroll);
         handleScroll();
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    }, [navItems]); // Added dependency to update on lang change
 
     useEffect(() => {
         if (isOpen) {
@@ -69,46 +71,41 @@ const Navbar = () => {
 
     return (
         <nav
-            className={`fixed w-full top-0 z-50 transition-all duration-500 ${isOpen
-                ? "bg-background"
+            className={`fixed w-full top-0 z-50 transition-all duration-300 ${isOpen
+                ? "bg-white dark:bg-black"
                 : scrolled
-                    ? "bg-background/50 backdrop-blur-xl border-b border-white/10"
+                    ? "bg-white dark:bg-black border-b border-gray-200 dark:border-zinc-800"
                     : "bg-transparent"
                 }`}
         >
             <div className="mx-auto px-[5%] sm:px-[5%] lg:px-[10%]">
-                <div className="flex items-center justify-between h-16">
-                    {/* Logo */}
+                <div className="flex items-center justify-between h-20">
+                    {/* Logo - Nike Style */}
                     <div className="flex-shrink-0">
                         <a
                             href="#Home"
                             onClick={(e) => scrollToSection(e, "#Home")}
-                            className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                            className="text-3xl font-oswald font-bold uppercase tracking-tighter text-black dark:text-white"
                         >
-                            Wardhani
+                            WARDHANI
                         </a>
                     </div>
 
-                    {/* Desktop Navigation */}
+                    {/* Desktop Navigation - Nike Style */}
                     <div className="hidden md:flex items-center space-x-8">
                         <div className="flex items-center space-x-8">
                             {navItems.map((item) => (
                                 <a
-                                    key={item.label}
+                                    key={item.href}
                                     href={item.href}
                                     onClick={(e) => scrollToSection(e, item.href)}
-                                    className="group relative px-1 py-2 text-sm font-medium"
+                                    className="group relative px-1 py-2 text-sm font-bold font-oswald tracking-widest text-black dark:text-white"
                                 >
-                                    <span
-                                        className={`relative z-10 transition-colors duration-300 ${activeSection === item.href.substring(1)
-                                            ? "text-primary font-semibold"
-                                            : "text-foreground/70 group-hover:text-primary"
-                                            }`}
-                                    >
+                                    <span className={`relative z-10 transition-colors duration-300 ${activeSection === item.href.substring(1) ? "opacity-100" : "opacity-60 group-hover:opacity-100"}`}>
                                         {item.label}
                                     </span>
                                     <span
-                                        className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary transform origin-left transition-transform duration-300 ${activeSection === item.href.substring(1)
+                                        className={`absolute bottom-0 left-0 w-full h-[2px] bg-black dark:bg-white transform origin-left transition-transform duration-300 ${activeSection === item.href.substring(1)
                                             ? "scale-x-100"
                                             : "scale-x-0 group-hover:scale-x-100"
                                             }`}
@@ -117,62 +114,66 @@ const Navbar = () => {
                             ))}
                         </div>
 
-                        {/* Theme Toggle Button */}
-                        <button
-                            onClick={toggleTheme}
-                            className="p-2 rounded-full hover:bg-foreground/10 transition-colors duration-300 text-foreground"
-                            aria-label="Toggle Theme"
-                        >
-                            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                        </button>
+                        <div className="flex items-center gap-4">
+                            {/* Language Toggle */}
+                            <button
+                                onClick={toggleLanguage}
+                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700 font-bold font-oswald w-10 h-10 flex items-center justify-center text-sm"
+                                aria-label="Toggle Language"
+                            >
+                                {language.toUpperCase()}
+                            </button>
+
+                            {/* Theme Toggle - Minimalist */}
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700"
+                                aria-label="Toggle Theme"
+                            >
+                                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                            </button>
+                        </div>
                     </div>
 
                     {/* Mobile Menu Button */}
                     <div className="md:hidden flex items-center gap-4">
+                        {/* Language Toggle Mobile */}
+                        <button
+                            onClick={toggleLanguage}
+                            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700 font-bold font-oswald w-10 h-10 flex items-center justify-center text-sm"
+                        >
+                            {language.toUpperCase()}
+                        </button>
+
                         <button
                             onClick={toggleTheme}
-                            className="p-2 rounded-full hover:bg-foreground/10 transition-colors duration-300 text-foreground"
+                            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700"
                         >
                             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                         </button>
 
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className={`relative p-2 text-foreground hover:text-primary transition-transform duration-300 ease-in-out transform ${isOpen ? "rotate-90 scale-125" : "rotate-0 scale-100"
-                                }`}
+                            className="relative p-2 text-black dark:text-white"
                         >
-                            {isOpen ? (
-                                <X className="w-6 h-6" />
-                            ) : (
-                                <Menu className="w-6 h-6" />
-                            )}
+                            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu - Nike Style */}
             <div
-                className={`md:hidden transition-all duration-300 ease-in-out ${isOpen
-                    ? "max-h-screen opacity-100"
-                    : "max-h-0 opacity-0 overflow-hidden"
-                    }`}
+                className={`md:hidden fixed inset-0 top-20 bg-white dark:bg-black transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+                style={{ height: 'calc(100vh - 5rem)' }}
             >
-                <div className="px-4 py-6 space-y-4 bg-background border-t border-white/10">
+                <div className="flex flex-col h-full p-8 space-y-8">
                     {navItems.map((item, index) => (
                         <a
                             key={item.label}
                             href={item.href}
                             onClick={(e) => scrollToSection(e, item.href)}
-                            className={`block px-4 py-3 text-lg font-medium transition-all duration-300 ease ${activeSection === item.href.substring(1)
-                                ? "text-primary font-semibold pl-6 border-l-2 border-primary"
-                                : "text-foreground/70 hover:text-primary hover:pl-6"
-                                }`}
-                            style={{
-                                transitionDelay: `${index * 100}ms`,
-                                transform: isOpen ? "translateX(0)" : "translateX(50px)",
-                                opacity: isOpen ? 1 : 0,
-                            }}
+                            className={`text-4xl font-oswald font-bold uppercase tracking-tighter text-black dark:text-white ${activeSection === item.href.substring(1) ? "opacity-100" : "opacity-50"}`}
                         >
                             {item.label}
                         </a>

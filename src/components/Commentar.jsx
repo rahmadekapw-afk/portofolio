@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
-import { MessageCircle, UserCircle2, Loader2, AlertCircle, Send, ImagePlus, X, Pin } from 'lucide-react';
+import { MessageCircle, UserCircle2, Loader2, Send, ImagePlus, X, Pin } from 'lucide-react';
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { supabase } from '../supabase';
+import { useLanguage } from "../context/LanguageContext";
 
-const Comment = memo(({ comment, formatDate, isPinned = false }) => (
+const Comment = memo(({ comment, formatDate, isPinned = false, t }) => (
     <div
-        className={`px-5 py-4 rounded-2xl border transition-all duration-300 group ${isPinned
-            ? 'bg-indigo-500/10 border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.1)]'
-            : 'bg-white/[0.03] border-white/10 hover:bg-white/[0.05] hover:border-white/20'
+        className={`px-6 py-6 border-b transition-all duration-300 group ${isPinned
+            ? 'bg-black text-white dark:bg-white dark:text-black border-black dark:border-white'
+            : 'bg-transparent border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-900'
             }`}
     >
         {isPinned && (
-            <div className="flex items-center gap-2 mb-3 text-indigo-400">
-                <Pin className="w-3.5 h-3.5 fill-current" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Pesan Tersemat</span>
+            <div className="flex items-center gap-2 mb-4 text-white dark:text-black">
+                <Pin className="w-4 h-4 fill-current" />
+                <span className="text-xs font-oswald font-bold uppercase tracking-widest">{t('comment.pinned')}</span>
             </div>
         )}
         <div className="flex items-start gap-4">
@@ -23,34 +24,33 @@ const Comment = memo(({ comment, formatDate, isPinned = false }) => (
                     <img
                         src={comment.profile_image}
                         alt={comment.user_name}
-                        className={`w-11 h-11 rounded-full object-cover border-2 ${isPinned ? 'border-indigo-500' : 'border-white/10'
-                            }`}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-black dark:border-white"
                         loading="lazy"
                     />
                 ) : (
-                    <div className={`p-2.5 rounded-full ${isPinned ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white/5 text-slate-400'}`}>
+                    <div className={`p-3 rounded-full ${isPinned ? 'bg-white text-black dark:bg-black dark:text-white' : 'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-gray-400'}`}>
                         <UserCircle2 className="w-6 h-6" />
                     </div>
                 )}
             </div>
 
             <div className="flex-grow min-w-0">
-                <div className="flex items-center justify-between gap-2 mb-1">
-                    <div className="flex items-center gap-2">
-                        <h4 className="font-semibold text-white text-sm md:text-base truncate">
+                <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-3">
+                        <h4 className={`font-bold font-oswald uppercase text-lg ${isPinned ? 'text-white dark:text-black' : 'text-black dark:text-white'}`}>
                             {comment.user_name}
                         </h4>
                         {isPinned && (
-                            <span className="px-1.5 py-0.5 text-[10px] bg-indigo-500 text-white font-bold rounded">
+                            <span className="px-2 py-0.5 text-[10px] bg-white text-black dark:bg-black dark:text-white font-bold uppercase tracking-wider">
                                 ADMIN
                             </span>
                         )}
                     </div>
-                    <span className="text-[11px] text-slate-500 whitespace-nowrap">
+                    <span className={`text-xs font-medium uppercase tracking-wider ${isPinned ? 'text-gray-300 dark:text-gray-600' : 'text-gray-500'}`}>
                         {formatDate(comment.created_at)}
                     </span>
                 </div>
-                <p className="text-slate-300 text-sm leading-relaxed break-words">
+                <p className={`text-sm leading-relaxed ${isPinned ? 'text-gray-200 dark:text-gray-800' : 'text-gray-700 dark:text-gray-300'}`}>
                     {comment.content}
                 </p>
             </div>
@@ -58,12 +58,11 @@ const Comment = memo(({ comment, formatDate, isPinned = false }) => (
     </div>
 ));
 
-const CommentForm = memo(({ onSubmit, isSubmitting }) => {
+const CommentForm = memo(({ onSubmit, isSubmitting, t }) => {
     const [newComment, setNewComment] = useState('');
     const [userName, setUserName] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
-    const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
 
     const handleImageChange = useCallback((e) => {
@@ -88,16 +87,16 @@ const CommentForm = memo(({ onSubmit, isSubmitting }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="relative group">
-                    <UserCircle2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                    <UserCircle2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-black dark:group-focus-within:text-white transition-colors" />
                     <input
                         type="text"
-                        placeholder="Nama"
+                        placeholder={t('comment.namePlaceholder')}
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
-                        className="w-full py-2.5 pl-10 pr-4 bg-white/5 border border-white/10 rounded-xl focus:border-indigo-500/50 outline-none text-white text-sm transition-all"
+                        className="w-full py-4 pl-12 pr-4 bg-gray-100 dark:bg-zinc-800/50 rounded-none border-b-2 border-transparent focus:border-black dark:focus:border-white outline-none text-black dark:text-white font-bold uppercase tracking-wider placeholder:text-gray-400 transition-all text-sm"
                         required
                     />
                 </div>
@@ -105,10 +104,10 @@ const CommentForm = memo(({ onSubmit, isSubmitting }) => {
                     <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="w-full py-2.5 px-4 bg-white/5 border border-white/10 border-dashed rounded-xl text-slate-400 text-sm hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                        className="w-full py-4 px-4 bg-gray-100 dark:bg-zinc-800/50 border-b-2 border-transparent hover:border-black dark:hover:border-white text-gray-400 hover:text-black dark:hover:text-white font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 text-sm rounded-none"
                     >
-                        <ImagePlus className="w-4 h-4" />
-                        {imagePreview ? 'Ganti Foto' : 'Foto Profil (Opsional)'}
+                        <ImagePlus className="w-5 h-5" />
+                        {imagePreview ? t('comment.changePhoto') : t('comment.profilePhoto')}
                     </button>
                     <input type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden" />
                 </div>
@@ -116,12 +115,12 @@ const CommentForm = memo(({ onSubmit, isSubmitting }) => {
 
             {imagePreview && (
                 <div className="relative inline-block">
-                    <img src={imagePreview} className="w-16 h-16 rounded-full border-2 border-indigo-500 object-cover" alt="preview" />
+                    <img src={imagePreview} className="w-20 h-20 object-cover border-2 border-black dark:border-white" alt="preview" />
                     <button
                         onClick={() => { setImagePreview(null); setImageFile(null); }}
-                        className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 shadow-lg"
+                        className="absolute -top-2 -right-2 bg-black text-white p-1 hover:scale-110 transition-transform rounded-full"
                     >
-                        <X className="w-3 h-3" />
+                        <X className="w-4 h-4" />
                     </button>
                 </div>
             )}
@@ -130,8 +129,8 @@ const CommentForm = memo(({ onSubmit, isSubmitting }) => {
                 <textarea
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Tulis komentar..."
-                    className="w-full min-h-[100px] p-4 bg-white/5 border border-white/10 rounded-2xl focus:border-indigo-500/50 outline-none text-white text-sm transition-all resize-none"
+                    placeholder={t('comment.writePlaceholder')}
+                    className="w-full min-h-[120px] p-6 bg-gray-100 dark:bg-zinc-800/50 rounded-none border-b-2 border-transparent focus:border-black dark:focus:border-white outline-none text-black dark:text-white text-base font-medium resize-none transition-all placeholder:text-gray-400 placeholder:font-bold placeholder:uppercase placeholder:tracking-wider text-sm"
                     required
                 />
             </div>
@@ -139,16 +138,17 @@ const CommentForm = memo(({ onSubmit, isSubmitting }) => {
             <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-4 bg-black dark:bg-white text-white dark:text-black font-oswald font-bold uppercase tracking-widest text-lg rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-all active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                {isSubmitting ? 'Mengirim...' : 'Kirim Komentar'}
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                {isSubmitting ? t('comment.sending') : t('comment.postButton')}
             </button>
         </form>
     );
 });
 
 const Komentar = () => {
+    const { t } = useLanguage();
     const [comments, setComments] = useState([]);
     const [pinnedComment, setPinnedComment] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -208,49 +208,52 @@ const Komentar = () => {
     const formatDate = (timestamp) => {
         const date = new Date(timestamp);
         const diff = Math.floor((new Date() - date) / 1000);
-        if (diff < 60) return 'Baru saja';
-        if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`;
-        if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`;
-        return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+        if (diff < 60) return 'JUST NOW';
+        if (diff < 3600) return `${Math.floor(diff / 60)} MINUTES AGO`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)} HOURS AGO`;
+        return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }).toUpperCase();
     };
 
     return (
-        <div className="w-full bg-white/[0.02] backdrop-blur-3xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
-            <div className="p-6 border-b border-white/5 bg-white/[0.02]">
-                <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-indigo-500/20 rounded-xl">
-                        <MessageCircle className="w-5 h-5 text-indigo-400" />
-                    </div>
-                    <h3 className="text-lg font-bold text-white tracking-tight">
-                        Diskusi <span className="text-indigo-400">({comments.length + (pinnedComment ? 1 : 0)})</span>
+        <div className="w-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 p-8 md:p-12 shadow-sm relative overflow-hidden group h-full" id="Commentar">
+            <div className="flex justify-between items-start mb-10">
+                <div>
+                    <h3 className="text-3xl font-oswald font-bold uppercase text-black dark:text-white mb-1">
+                        {t('comment.title')}
                     </h3>
+                    <p className="text-gray-400 text-sm font-medium">{t('comment.subtitle')} ({comments.length + (pinnedComment ? 1 : 0)})</p>
+                </div>
+                <div className="p-3 bg-black dark:bg-white rounded-full">
+                    <MessageCircle className="w-5 h-5 text-white dark:text-black" />
                 </div>
             </div>
 
-            <div className="p-6">
-                <CommentForm onSubmit={handleCommentSubmit} isSubmitting={isSubmitting} />
+            <div>
+                <CommentForm onSubmit={handleCommentSubmit} isSubmitting={isSubmitting} t={t} />
 
-                <div className="mt-8 space-y-4 max-h-[450px] overflow-y-auto pr-2 custom-scrollbar">
-                    {pinnedComment && <Comment comment={pinnedComment} formatDate={formatDate} isPinned={true} />}
+                <div className="mt-16 space-y-0 max-h-[600px] overflow-y-auto custom-scrollbar border-t-2 border-gray-100 dark:border-zinc-800">
+                    {pinnedComment && <Comment comment={pinnedComment} formatDate={formatDate} isPinned={true} t={t} />}
                     {comments.map((comment) => (
-                        <Comment key={comment.id} comment={comment} formatDate={formatDate} />
+                        <Comment key={comment.id} comment={comment} formatDate={formatDate} t={t} />
                     ))}
                     {comments.length === 0 && !pinnedComment && (
-                        <div className="text-center py-10">
-                            <p className="text-slate-500 text-sm">Belum ada komentar. Jadilah yang pertama!</p>
+                        <div className="text-center py-20">
+                            <p className="text-gray-400 font-bold uppercase tracking-widest text-lg">{t('comment.noComments')}</p>
                         </div>
                     )}
                 </div>
             </div>
 
             <style jsx>{`
-                .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+                .custom-scrollbar::-webkit-scrollbar { width: 4px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { 
-                    background: rgba(99, 102, 241, 0.2); 
-                    border-radius: 10px; 
+                    background: #d1d5db; 
                 }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.4); }
+                .dark .custom-scrollbar::-webkit-scrollbar-thumb { 
+                    background: #3f3f46; 
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
             `}</style>
         </div>
     );
