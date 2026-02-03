@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, memo } from "react"
 import { Github, Linkedin, Mail, ExternalLink, Instagram, Sparkles } from "lucide-react"
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import MagneticButton from "../components/MagneticButton";
 
 import { useLanguage } from "../context/LanguageContext";
 
@@ -29,22 +30,23 @@ const TechStack = memo(({ tech }) => (
 ));
 
 const CTAButton = memo(({ href, text, icon: Icon }) => (
-  <a href={href}>
-    <button className="group relative w-[160px] h-12 bg-black dark:bg-white overflow-hidden rounded-full transition-all hover:scale-105 active:scale-95">
-      <div className="absolute inset-0 flex items-center justify-center gap-2 text-white dark:text-black font-oswald font-bold uppercase tracking-widest z-10">
-        {text}
-        <Icon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-      </div>
-    </button>
-  </a>
+  <MagneticButton href={href} className="group relative w-[160px] h-12 bg-black dark:bg-white overflow-hidden rounded-full transition-all hover:scale-105 active:scale-95 inline-block">
+    <div className="absolute inset-0 flex items-center justify-center gap-2 text-white dark:text-black font-oswald font-bold uppercase tracking-widest z-10">
+      {text}
+      <Icon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+    </div>
+  </MagneticButton>
 ));
 
 const SocialLink = memo(({ icon: Icon, link }) => (
-  <a href={link} target="_blank" rel="noopener noreferrer">
-    <button className="group p-3 rounded-full border border-gray-200 dark:border-zinc-800 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300">
-      <Icon className="w-5 h-5 transition-colors" />
-    </button>
-  </a>
+  <MagneticButton
+    href={link}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="group p-3 rounded-full border border-gray-200 dark:border-zinc-800 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300 inline-block bg-white dark:bg-black"
+  >
+    <Icon className="w-5 h-5 transition-colors" />
+  </MagneticButton>
 ));
 
 // Constants
@@ -54,9 +56,9 @@ const PAUSE_DURATION = 2000;
 const WORDS = ["Network Engineer", "Tech Enthusiast"]; // Updated words for professional look
 const TECH_STACK = ["React", "Javascript", "Node.js", "Tailwind"];
 const SOCIAL_LINKS = [
-  { icon: Github, link: "https://github.com/EkiZR" },
-  { icon: Linkedin, link: "https://www.linkedin.com/in/ekizr/" },
-  { icon: Instagram, link: "https://www.instagram.com/ekizr._/?hl=id" }
+  { icon: Github, link: "https://github.com/rahmadekapw-afk" },
+  { icon: Linkedin, link: "https://www.linkedin.com/in/putra-wardhani-1497383a9/" },
+  { icon: Instagram, link: "https://www.instagram.com/wardhani.12_" }
 ];
 
 const Home = () => {
@@ -179,8 +181,8 @@ const Home = () => {
               data-aos="fade-left"
               data-aos-delay="600">
               <div className="relative w-full aspect-square max-w-[500px]">
-                {/* Solid geometric shape instead of blur blob */}
-                <div className="absolute inset-0 bg-gray-100 dark:bg-zinc-900 rounded-full scale-90"></div>
+                {/* Solid geometric shape instead of blur blob - Made more transparent/smooth */}
+                <div className="absolute inset-0 bg-gray-200/50 dark:bg-zinc-800/20 rounded-full scale-90 blur-3xl"></div>
 
                 {/* Image with grayscale filter */}
                 <img

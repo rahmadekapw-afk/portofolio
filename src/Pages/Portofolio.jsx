@@ -105,7 +105,7 @@ export default function FullWidthTabs() {
 
   useEffect(() => {
     AOS.init({
-      once: false,
+      once: true,
     });
     setProjects(projectData);
     localStorage.setItem("projects", JSON.stringify(projectData));
@@ -130,7 +130,7 @@ export default function FullWidthTabs() {
     <div className="md:px-[10%] px-[5%] w-full sm:mt-0 mt-[3rem] bg-white dark:bg-black overflow-hidden pb-20" id="Portofolio">
       {/* Header section - Nike Style */}
       <div className="text-center pb-12 pt-20" data-aos="fade-up" data-aos-duration="1000">
-        <h2 className="text-5xl md:text-8xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white mb-4">
+        <h2 className="text-4xl md:text-5xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white mb-4">
           {t('projects.title')}
         </h2>
         <p className="text-gray-500 font-medium tracking-wide uppercase text-sm md:text-base max-w-2xl mx-auto">
@@ -191,8 +191,6 @@ export default function FullWidthTabs() {
                 {displayedProjects.map((project, index) => (
                   <div
                     key={project.id || index}
-                    data-aos="fade-up"
-                    data-aos-duration="1000"
                   >
                     <CardProject
                       Img={project.Img}

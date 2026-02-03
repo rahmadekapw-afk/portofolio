@@ -16,6 +16,9 @@ import NotFoundPage from "./Pages/404";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 import Footer from "./components/Footer";
+import CustomCursor from "./components/CustomCursor";
+
+import PageTransition from "./components/PageTransition";
 
 const LandingPage = ({ showWelcome, setShowWelcome }) => {
   return (
@@ -27,25 +30,30 @@ const LandingPage = ({ showWelcome, setShowWelcome }) => {
       </AnimatePresence>
 
       {!showWelcome && (
-        <ErrorBoundary>
+        <>
           <Navbar />
+          <CustomCursor />
           <AnimatedBackground />
-          <Home />
-          <About />
-          <Portofolio />
-          <ContactPage />
-          <Footer />
-        </ErrorBoundary>
+          <PageTransition>
+            <ErrorBoundary>
+              <Home />
+              <About />
+              <Portofolio />
+              <ContactPage />
+              <Footer />
+            </ErrorBoundary>
+          </PageTransition>
+        </>
       )}
     </>
   );
 };
 
 const ProjectPageLayout = () => (
-  <>
+  <PageTransition>
     <ProjectDetails />
-    <Footer />
-  </>
+    <CustomCursor />
+  </PageTransition>
 );
 
 function App() {

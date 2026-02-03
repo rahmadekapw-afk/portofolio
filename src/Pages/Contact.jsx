@@ -7,6 +7,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import axios from "axios";
 import { useLanguage } from "../context/LanguageContext";
+import MagneticButton from "../components/MagneticButton";
 
 const ContactPage = () => {
   const { t } = useLanguage();
@@ -44,8 +45,14 @@ const ContactPage = () => {
       submitData.append('email', formData.email);
       submitData.append('message', formData.message);
       submitData.append('_captcha', 'false');
+      submitData.append('_template', 'table'); // Better email formatting
 
-      await axios.post(formSubmitUrl, submitData);
+      await axios.post(formSubmitUrl, submitData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
 
       Swal.fire({
         title: t('contact.successTitle'),
@@ -56,6 +63,7 @@ const ContactPage = () => {
 
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
+      console.error(error); // Log error for debugging
       Swal.fire({
         title: t('contact.errorTitle'),
         text: t('contact.errorMessage'),
@@ -73,7 +81,7 @@ const ContactPage = () => {
       <div className="text-center mb-20">
         <h2
           data-aos="fade-down"
-          className="text-6xl md:text-8xl font-oswald font-black uppercase tracking-tighter mb-4 text-black dark:text-white"
+          className="text-4xl md:text-5xl font-oswald font-black uppercase tracking-tighter mb-4 text-black dark:text-white"
         >
           {t('contact.title')}
         </h2>
@@ -155,10 +163,11 @@ const ContactPage = () => {
               </div>
             </div>
 
-            <button
+            <MagneticButton
+              as="button"
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 bg-black dark:bg-white text-white dark:text-black font-oswald font-bold text-lg uppercase tracking-widest rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50 mt-4"
+              className="w-full py-4 bg-black dark:bg-white text-white dark:text-black font-oswald font-bold text-lg uppercase tracking-widest rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50 mt-4 cursor-pointer"
             >
               {isSubmitting ? (
                 <span className="animate-pulse">{t('contact.sending')}</span>
@@ -168,7 +177,7 @@ const ContactPage = () => {
                   {t('contact.sendButton')}
                 </>
               )}
-            </button>
+            </MagneticButton>
           </form>
 
 

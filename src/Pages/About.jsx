@@ -3,6 +3,7 @@ import { FileText, Code, Award, Globe, ArrowUpRight } from "lucide-react"
 import { useLanguage } from "../context/LanguageContext"
 import AOS from "aos"
 import "aos/dist/aos.css"
+import MagneticButton from "../components/MagneticButton"
 
 // ================= HEADER =================
 const Header = memo(() => {
@@ -10,7 +11,7 @@ const Header = memo(() => {
   return (
     <div className="text-center lg:mb-16 mb-10 px-[5%]">
       <h2
-        className="text-6xl md:text-8xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white"
+        className="text-4xl md:text-5xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white"
         data-aos="fade-down"
         data-aos-duration="600"
       >
@@ -129,17 +130,14 @@ const AboutPage = () => {
           </p>
 
           <div className="flex flex-wrap gap-4 mt-10">
-            <a href="https://drive.google.com" target="_blank">
-              <button className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black font-oswald font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-all active:scale-95 flex items-center gap-2">
-                <FileText className="w-5 h-5" /> Download CV
-              </button>
-            </a>
-
-            <a href="#Portofolio">
-              <button className="px-8 py-4 border-2 border-black dark:border-white text-black dark:text-white font-oswald font-bold uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all active:scale-95 flex items-center gap-2">
-                <Code className="w-5 h-5" /> {t('projects.viewProject')}
-              </button>
-            </a>
+            <MagneticButton
+              href="https://drive.google.com/drive/folders/1ffna917F2awgK7z0ChNmYZa2IKdtC3EH?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-4 bg-black dark:bg-white text-white dark:text-black font-oswald font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-all active:scale-95 flex items-center gap-2 relative z-10 rounded-none cursor-pointer"
+            >
+              <FileText className="w-5 h-5" /> Download CV
+            </MagneticButton>
           </div>
         </div>
 
@@ -151,7 +149,7 @@ const AboutPage = () => {
           <StatCard key={stat.label} {...stat} />
         ))}
       </div>
-    </div>
+    </div >
   )
 }
 

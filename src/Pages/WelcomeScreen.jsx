@@ -6,7 +6,7 @@ import 'aos/dist/aos.css';
 
 const TypewriterEffect = ({ text }) => {
   const [displayText, setDisplayText] = useState('');
-  
+
   useEffect(() => {
     let index = 0;
     const timer = setInterval(() => {
@@ -17,7 +17,7 @@ const TypewriterEffect = ({ text }) => {
         clearInterval(timer);
       }
     }, 260);
-    
+
     return () => clearInterval(timer);
   }, [text]);
 
@@ -29,12 +29,43 @@ const TypewriterEffect = ({ text }) => {
   );
 };
 
+// Image Removed due to missing asset
+// import RobotImage from '../assets/robot_character.png';
+
 const BackgroundEffect = () => (
-  <div className="absolute inset-0 overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 blur-3xl animate-pulse" />
-    <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600/10 via-transparent to-purple-600/10 blur-2xl animate-float" />
+  <div className="absolute inset-0 overflow-hidden bg-[#000000]">
+    {/* Subtle animated background gradients for depth */}
+    <div className="absolute top-[-20%] left-[-20%] w-[80%] h-[80%] bg-indigo-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
+    <div className="absolute bottom-[-20%] right-[-20%] w-[80%] h-[80%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }} />
+
+    {/* Floating Robot Character - Centered and Smooth */}
+    <div className="absolute inset-0 flex items-center justify-center z-0">
+      <div className="relative w-full max-w-[600px] aspect-square flex items-center justify-center">
+        {/* Placeholder for missing robot image */}
+        <div className="w-[80%] h-[80%] flex items-center justify-center animate-float"
+          style={{
+            animation: 'float 8s ease-in-out infinite',
+          }}>
+          <Code2 className="w-32 h-32 text-indigo-500/50" />
+        </div>
+      </div>
+    </div>
+
+    {/* Modern Glass Overlay */}
+    <div className="absolute inset-0 bg-black/10 backdrop-blur-[1px]" />
+
+    <style jsx>{`
+      @keyframes float {
+        0% { transform: translate(0, 15px); }
+        35% { transform: translate(0, -15px); }
+        65% { transform: translate(0, 15px); }
+        85% { transform: translate(15px, 5px); }
+        100% { transform: translate(0, 15px); }
+      }
+    `}</style>
   </div>
 );
+
 
 const IconButton = ({ Icon }) => (
   <div className="relative group hover:scale-110 transition-transform duration-300">
@@ -61,7 +92,7 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
         onLoadingComplete?.();
       }, 1000);
     }, 4000);
-    
+
     return () => clearTimeout(timer);
   }, [onLoadingComplete]);
 
@@ -101,11 +132,12 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
           variants={containerVariants}
         >
           <BackgroundEffect />
-          
-          <div className="relative min-h-screen flex items-center justify-center px-4">
+
+          {/* Main Content - Added z-20 to ensure it's above the video */}
+          <div className="relative z-20 min-h-screen flex items-center justify-center px-4">
             <div className="w-full max-w-4xl mx-auto">
               {/* Icons */}
-              <motion.div 
+              <motion.div
                 className="flex justify-center gap-3 sm:gap-4 md:gap-8 mb-6 sm:mb-8 md:mb-12"
                 variants={childVariants}
               >
@@ -117,7 +149,7 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
               </motion.div>
 
               {/* Welcome Text */}
-              <motion.div 
+              <motion.div
                 className="text-center mb-6 sm:mb-8 md:mb-12"
                 variants={childVariants}
               >
@@ -145,7 +177,7 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
               </motion.div>
 
               {/* Website Link */}
-              <motion.div 
+              <motion.div
                 className="text-center"
                 variants={childVariants}
                 data-aos="fade-up"

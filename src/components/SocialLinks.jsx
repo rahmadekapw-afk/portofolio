@@ -109,23 +109,30 @@ const SocialLinks = () => {
 
   return (
     <div className="w-full">
+      <h2
+        className="text-2xl md:text-3xl font-black uppercase text-white dark:text-black mb-6 font-oswald tracking-tight"
+        data-aos="fade-down"
+      >
+        {t('footer.cta')}
+      </h2>
+
       <h3
-        className="text-xl font-semibold text-white mb-6"
+        className="text-lg font-semibold text-white dark:text-black mb-4"
         data-aos="fade-down"
       >
         {t('footer.connect')}
       </h3>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-5 md:grid-cols-9 lg:grid-cols-12 gap-3">
         {socialLinks.map((link, index) => (
           <a
             key={link.name}
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative flex items-center gap-3 p-4 rounded-xl 
-                       bg-white/5 border border-white/10 overflow-hidden
-                       hover:border-white/20 transition-all duration-500"
+            className="group relative flex flex-col items-center justify-center gap-2 p-2 rounded-xl 
+                       bg-white/5 dark:bg-black/5 border border-white/10 dark:border-black/10 overflow-hidden
+                       hover:border-white/20 dark:hover:border-black/20 transition-all duration-500 aspect-square"
             data-aos="fade-up"
             data-aos-delay={index * 100}
           >
@@ -142,17 +149,17 @@ const SocialLinks = () => {
               />
               <div className="relative p-2 rounded-lg">
                 <link.icon
-                  className="w-5 h-5 transition-all duration-500 group-hover:scale-110"
+                  className="w-4 h-4 transition-all duration-500 group-hover:scale-110"
                   style={{ color: link.color }}
                 />
               </div>
             </div>
 
-            <div className="flex flex-col min-w-0">
-              <span className="text-sm font-bold text-gray-200 group-hover:text-white transition-colors duration-300">
+            <div className="flex flex-col min-w-0 items-center">
+              <span className="text-[10px] font-bold text-gray-200 dark:text-zinc-700 group-hover:text-white dark:group-hover:text-black transition-colors duration-300">
                 {link.displayName}
               </span>
-              <span className="text-xs text-gray-400 truncate group-hover:text-gray-300 transition-colors duration-300">
+              <span className="text-[9px] text-gray-400 dark:text-zinc-500 truncate group-hover:text-gray-300 dark:group-hover:text-zinc-600 transition-colors duration-300">
                 {link.subText}
               </span>
             </div>
