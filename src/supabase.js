@@ -6,31 +6,34 @@ const createClient = () => {
     return {
         from: (table) => {
             return {
-                select: async (columns) => {
-                    // We ignore 'columns' and always return * from our simple API
+                select: async () => {
                     try {
                         const response = await fetch(`${API_BASE}/${table}.php`);
-                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        if (!response.ok) {
+                            const text = await response.text();
+                            throw new Error(`Server Error: ${response.status} - ${text.substring(0, 100)}`);
+                        }
                         const data = await response.json();
-                        return { data, error: null };
+                        return { data: Array.isArray(data) ? data : [], error: null };
                     } catch (error) {
                         console.error("API Fetch Error:", error);
-                        return { data: null, error };
+                        return { data: [], error };
                     }
                 },
                 insert: async (payload) => {
                     try {
-                        // Handle array wrapper if present
                         const bodyData = Array.isArray(payload) ? payload[0] : payload;
-
                         const response = await fetch(`${API_BASE}/${table}.php`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(bodyData)
                         });
+                        if (!response.ok) {
+                            const text = await response.text();
+                            throw new Error(`Insert Error: ${response.status} - ${text.substring(0, 100)}`);
+                        }
                         const result = await response.json();
-                        if (result.error) throw new Error(result.error);
-                        return { data: result, error: null }; // Mocking success response
+                        return { data: result, error: null };
                     } catch (error) {
                         console.error("API Insert Error:", error);
                         return { data: null, error };
@@ -38,8 +41,6 @@ const createClient = () => {
                 }
             };
         },
-        // Mock realtime channel to prevent crashes (functionality won't work)
-        // Mock realtime channel to prevent crashes
         channel: (name) => {
             const mockChannel = {
                 on: () => mockChannel,

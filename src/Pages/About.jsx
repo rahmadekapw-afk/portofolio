@@ -5,6 +5,40 @@ import AOS from "aos"
 import "aos/dist/aos.css"
 import MagneticButton from "../components/MagneticButton"
 
+// ================= LOCATION BADGE =================
+const LocationBadge = memo(() => {
+  const { t } = useLanguage();
+  const locationParts = t('about.location').split(' ');
+  return (
+    <div
+      className="inline-flex items-center bg-zinc-950 dark:bg-zinc-900 rounded-full pl-6 pr-2 py-2 border border-white/10 shadow-2xl"
+    >
+      <style>
+        {`
+          @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          .animate-spin-slow {
+            animation: spin-slow 10s linear infinite;
+          }
+        `}
+      </style>
+      <div className="flex flex-col text-left">
+        <span className="text-white/50 text-[10px] font-bold uppercase tracking-[0.2em] leading-none mb-1">
+          {locationParts[0]} {locationParts[1]}
+        </span>
+        <span className="text-white text-lg font-black tracking-tighter leading-none uppercase">
+          {locationParts[2]}
+        </span>
+      </div>
+      <div className="ml-6 w-12 h-12 rounded-full bg-white flex items-center justify-center border border-white/20">
+        <Globe className="w-6 h-6 text-black animate-spin-slow" />
+      </div>
+    </div>
+  );
+})
+
 // ================= HEADER =================
 const Header = memo(() => {
   const { t } = useLanguage();
@@ -24,16 +58,17 @@ const Header = memo(() => {
 
 // ================= PROFILE IMAGE =================
 const ProfileImage = memo(() => (
-  <div className="flex justify-end items-center sm:p-12 p-0">
+  <div className="flex justify-center lg:justify-end items-center sm:p-12 p-0">
     <div className="relative group" data-aos="zoom-in" data-aos-duration="1000">
-      {/* Solid Geometric Background */}
-      <div className="absolute top-4 right-4 w-full h-full bg-gray-200 dark:bg-zinc-800 -z-10 transition-transform group-hover:translate-x-2 group-hover:translate-y-2"></div>
+      {/* Decorative Background Blobs */}
+      <div className="absolute -inset-4 bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+      <div className="absolute inset-0 bg-gray-100 dark:bg-zinc-900 rounded-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500 border border-black/5 dark:border-white/5 shadow-xl"></div>
 
-      <div className="relative w-72 h-72 sm:w-96 sm:h-96 overflow-hidden border-2 border-black dark:border-white transition-all duration-500">
+      <div className="relative w-[280px] h-[350px] sm:w-[350px] sm:h-[450px] lg:w-[400px] lg:h-[500px] overflow-hidden rounded-2xl transition-all duration-500 shadow-2xl border-4 border-white dark:border-zinc-800">
         <img
           src="/Photo.jpeg"
           alt="Profile"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
           loading="lazy"
         />
       </div>
@@ -43,8 +78,8 @@ const ProfileImage = memo(() => (
 
 // ================= STAT CARD =================
 const StatCard = memo(({ icon: Icon, value, label, description, animation }) => (
-  <div data-aos={animation} data-aos-duration="1300">
-    <div className="bg-white dark:bg-black p-8 border-2 border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors duration-300 group">
+  <div data-aos={animation} data-aos-duration="1300" className="w-full">
+    <div className="bg-transparent dark:bg-black p-8 border-2 border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors duration-300 group">
       <div className="flex items-center justify-between mb-6">
         <Icon className="w-12 h-12 text-black dark:text-white group-hover:text-white dark:group-hover:text-black transition-colors" />
         <span className="text-5xl font-oswald font-bold tracking-tight">{value}</span>
@@ -109,11 +144,14 @@ const AboutPage = () => {
   ]
 
   return (
-    <div className="pb-20 pt-20 text-black dark:text-white px-[5%] lg:px-[10%]" id="About">
+    <div className="pb-20 pt-20 bg-transparent text-black dark:text-white px-[5%] lg:px-[10%]" id="About">
       <Header />
 
       <div className="grid lg:grid-cols-2 gap-16 items-center mt-10">
-        <div>
+        <div className="flex flex-col items-start">
+          <div className="mb-6">
+            <LocationBadge />
+          </div>
           <h2
             className="text-4xl md:text-5xl font-oswald font-bold uppercase mb-8 leading-tight"
             data-aos="fade-right"

@@ -21,6 +21,7 @@ export const translations = {
             statYears: "YEARS EXPERIENCE",
             statProjects: "PROJECTS COMPLETED",
             statClients: "HAPPY CLIENTS",
+            location: "Located in Indonesia",
             quote: "\"Code is like humor. When you have to explain it, it’s bad.\"",
         },
         projects: {
@@ -99,6 +100,7 @@ export const translations = {
             statYears: "TAHUN PENGALAMAN",
             statProjects: "PROYEK SELESAI",
             statClients: "KLIEN PUAS",
+            location: "Berdiam di Indonesia",
             quote: "\"Kode itu seperti humor. Kalau harus dijelaskan, berarti buruk.\"",
         },
         projects: {

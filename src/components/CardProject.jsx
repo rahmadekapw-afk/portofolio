@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import MagneticButton from './MagneticButton';
+import DeviceMockup from './DeviceMockup';
 
 const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
   const { t } = useLanguage();
@@ -41,23 +42,25 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
     <div className="group relative w-full border-2 border-transparent hover:border-black dark:hover:border-white transition-all duration-300">
       <div className="relative overflow-hidden bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 hover:shadow-lg transition-all duration-300">
 
-        {/* Image Section - Magnetic Effect */}
-        <MagneticButton className="relative aspect-video overflow-hidden cursor-pointer" strength={0.3}>
-          <img
-            src={Img}
-            alt={Title}
-            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-          />
-          <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all duration-300"></div>
-        </MagneticButton>
+        {/* Image Section - Device Mockup */}
+        <div className="relative overflow-hidden cursor-pointer group/mockup py-8 px-4 bg-gray-50/50 dark:bg-zinc-900/50" onClick={(e) => id && handleDetails(e, id)}>
+          <div className="hidden md:block">
+            <DeviceMockup type="laptop" image={Img} />
+          </div>
+          <div className="block md:hidden">
+            <DeviceMockup type="phone" image={Img} />
+          </div>
+
+          <div className="absolute inset-0 bg-black/0 group-hover/mockup:bg-black/5 transition-all duration-300"></div>
+        </div>
 
         {/* Content Section */}
-        <div className="p-6">
-          <h3 className="text-2xl font-oswald font-bold uppercase text-black dark:text-white mb-3">
+        <div className="p-4">
+          <h3 className="text-xl font-oswald font-bold uppercase text-black dark:text-white mb-2">
             {Title}
           </h3>
 
-          <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-2 mb-6 font-medium">
+          <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed line-clamp-2 mb-4 font-medium">
             {Description}
           </p>
 
