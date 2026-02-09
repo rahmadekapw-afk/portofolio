@@ -15,6 +15,10 @@ import Certificate from "../components/Certificate";
 import { Code, Award, Boxes } from "lucide-react";
 import { projectData } from "../data/ProjectList";
 import { useLanguage } from "../context/LanguageContext";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const ToggleButton = ({ onClick, isShowingMore }) => {
   const { t } = useLanguage();
@@ -109,6 +113,49 @@ export default function FullWidthTabs() {
     });
     setProjects(projectData);
     localStorage.setItem("projects", JSON.stringify(projectData));
+
+    // Initialize GSAP with a slight delay to ensure DOM is ready and measurements are correct
+    const ctx = gsap.context(() => {
+      // GSAP ScrollTrigger for Header
+      gsap.from(".portfolio-header", {
+        y: 30,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: ".portfolio-header",
+          start: "top 90%",
+          once: true,
+        }
+      });
+
+      // GSAP ScrollTrigger for Project Cards
+      gsap.from(".project-card-container", {
+        y: 60,
+        opacity: 0,
+        duration: 1,
+        stagger: {
+          amount: 0.6,
+          from: "start"
+        },
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".projects-grid",
+          start: "top 90%",
+          once: true,
+        }
+      });
+    });
+
+    // Refresh ScrollTrigger after a short delay to account for dynamic content/layout
+    const timeoutId = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
+
+    return () => {
+      ctx.revert();
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const handleChange = (event, newValue) => {
@@ -129,7 +176,7 @@ export default function FullWidthTabs() {
   return (
     <div className="md:px-[10%] px-[5%] w-full sm:mt-0 mt-[3rem] bg-white dark:bg-black overflow-hidden pb-20" id="Portofolio">
       {/* Header section - Nike Style */}
-      <div className="text-center pb-12 pt-20" data-aos="fade-up" data-aos-duration="1000">
+      <div className="text-center pb-12 pt-20 portfolio-header">
         <h2 className="text-4xl md:text-5xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white mb-4">
           {t('projects.title')}
         </h2>
@@ -187,20 +234,33 @@ export default function FullWidthTabs() {
           {/* Projects Tab */}
           <TabPanel value={value} index={0} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 gap-8">
-                {displayedProjects.map((project, index) => (
-                  <div
-                    key={project.id || index}
-                  >
-                    <CardProject
-                      Img={project.Img}
-                      Title={project.Title}
-                      Description={project.Description}
-                      Link={project.Link}
-                      id={project.id}
-                    />
-                  </div>
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 projects-grid">
+                {displayedProjects.map((project, index) => {
+                  // Bento Grid Logic: 
+                  // First item: span 2 cols, 2 rows (Feature)
+                  // Second item: span 2 cols, 1 row
+                  // Third/Fourth: span 1 col, 1 row
+                  const isLarge = index === 0;
+                  const isMedium = index === 1;
+
+                  return (
+                    <div
+                      key={project.id || index}
+                      className={`project-card-container h-full ${isLarge ? "md:col-span-2 md:row-span-2" :
+                        isMedium ? "md:col-span-2 md:row-span-1" :
+                          "md:col-span-1"
+                        }`}
+                    >
+                      <CardProject
+                        Img={project.Img}
+                        Title={project.Title}
+                        Description={project.Description}
+                        Link={project.Link}
+                        id={project.id}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
             {projects.length > initialItems && (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, memo, useMemo } from 'react';
-import { MessageCircle, UserCircle2, Loader2, Send, ImagePlus, X, Pin, Sparkles } from 'lucide-react';
+import { MessageCircle, UserCircle2, Loader2, Send, ImagePlus, X, Pin, Sparkles, Trash2 } from 'lucide-react';
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { supabase } from '../supabase';
@@ -17,12 +17,30 @@ const Comment = memo(({
     onCancelReply,
     onSubmitReply,
     isSubmitting,
-    replies = []
+    replies = [],
+    onDelete
 }) => {
-    const isAdmin = comment.user_name?.toLowerCase().includes('wardhani') ||
-        comment.user_name?.toLowerCase().includes('ekizr') ||
-        isPinned;
+    const viewerName = localStorage.getItem('commenter_name')?.toLowerCase() || '';
+    const isOwnerName = (name) => {
+        const n = name?.toLowerCase() || '';
+        return n.includes('wardhani') || n.includes('ekizr') || n.includes('putra') || n.includes('rahmad');
+    };
+
+    const isCommentOwner = isOwnerName(comment.user_name);
+    const isViewerAdmin = isOwnerName(viewerName);
+
+    // Can delete if: Viewer is Admin, OR Viewer is the one who wrote the comment
+    const canDelete = isViewerAdmin || (viewerName && viewerName === comment.user_name?.toLowerCase());
+
+    // Display as Admin if: Comment was written by Owner, or it's pinned
+    const isAdmin = isCommentOwner || isPinned;
+
     const isReplying = activeReplyId === comment.id;
+
+    const handleDelete = async (e) => {
+        e.stopPropagation();
+        onDelete(comment.id);
+    };
 
     return (
         <div className="border-b border-gray-100 dark:border-zinc-800 last:border-0">
@@ -85,24 +103,27 @@ const Comment = memo(({
                             {comment.content}
                         </p>
 
-                        {!isPinned && onReply && (
-                            <button
-                                onClick={() => onReply(comment)}
-                                className="flex items-center gap-1.5 text-[10px] md:text-xs font-bold uppercase tracking-widest text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white transition-colors"
-                            >
-                                <Send className="w-3 h-3 rotate-45" />
-                                {isReplying ? 'CANCEL' : 'REPLY'}
-                            </button>
-                        )}
-                        {isPinned && onReply && (
-                            <button
-                                onClick={() => onReply(comment)}
-                                className="flex items-center gap-1.5 text-[10px] md:text-xs font-bold uppercase tracking-widest text-white/70 hover:text-white dark:text-black/70 dark:hover:text-black transition-colors"
-                            >
-                                <Send className="w-3 h-3 rotate-45" />
-                                {isReplying ? 'CANCEL' : 'REPLY'}
-                            </button>
-                        )}
+                        <div className="flex items-center gap-4">
+                            {!isPinned && onReply && (
+                                <button
+                                    onClick={() => onReply(comment)}
+                                    className={`flex items-center gap-1.5 text-[10px] md:text-xs font-bold uppercase tracking-widest transition-colors ${isPinned ? 'text-white/70 hover:text-white' : 'text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white'}`}
+                                >
+                                    <Send className="w-3 h-3 rotate-45" />
+                                    {isReplying ? 'CANCEL' : 'REPLY'}
+                                </button>
+                            )}
+
+                            {canDelete && (
+                                <button
+                                    onClick={handleDelete}
+                                    className={`flex items-center gap-1.5 text-[10px] md:text-xs font-bold uppercase tracking-widest transition-colors ${isPinned ? 'text-white/70 hover:text-red-400' : 'text-black/60 hover:text-red-500 dark:text-white/60 dark:hover:text-red-400'}`}
+                                >
+                                    <Trash2 className="w-3 h-3" />
+                                    DELETE
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -136,6 +157,7 @@ const Comment = memo(({
                             onSubmitReply={onSubmitReply}
                             isSubmitting={isSubmitting}
                             replies={reply.replies}
+                            onDelete={onDelete}
                         />
                     ))}
                 </div>
@@ -146,7 +168,7 @@ const Comment = memo(({
 
 const CommentForm = memo(({ onSubmit, isSubmitting, t, replyTo, onCancelReply }) => {
     const [newComment, setNewComment] = useState('');
-    const [userName, setUserName] = useState('');
+    const [userName, setUserName] = useState(() => localStorage.getItem('commenter_name') || '');
     const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const fileInputRef = useRef(null);
@@ -165,6 +187,7 @@ const CommentForm = memo(({ onSubmit, isSubmitting, t, replyTo, onCancelReply })
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!newComment.trim() || !userName.trim()) return;
+        localStorage.setItem('commenter_name', userName);
         onSubmit({ newComment, userName, imageFile, parentId: replyTo?.id });
         setNewComment('');
         setImagePreview(null);
@@ -234,6 +257,7 @@ const CommentForm = memo(({ onSubmit, isSubmitting, t, replyTo, onCancelReply })
             </div>
 
             <MagneticButton
+                as="button"
                 type="submit"
                 disabled={isSubmitting}
                 className="w-full py-3 md:py-4 bg-black dark:bg-white text-white dark:text-black font-oswald font-bold uppercase tracking-widest text-base md:text-lg rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-all active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg shadow-black/10"
@@ -261,22 +285,21 @@ const Komentar = () => {
         AOS.init({ once: false });
         fetchData();
 
-        const subscription = supabase
-            .channel('portfolio_comments')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'portfolio_comments' }, () => {
-                fetchData();
-            })
-            .subscribe();
+        // Polling for pseudo-realtime interaction every 5 seconds
+        const pollInterval = setInterval(() => {
+            fetchData();
+        }, 5000);
 
-        return () => subscription.unsubscribe();
+        return () => {
+            clearInterval(pollInterval);
+        };
     }, []);
 
     const fetchData = async () => {
         try {
             const { data, error } = await supabase.from('portfolio_comments').select('*');
-            // Don't throw here to avoid crashing the whole app; just log and handle empty state
             if (error) {
-                console.error("Fetch error details:", error);
+                console.error("Fetch Failed", error);
                 return;
             }
             if (data && Array.isArray(data)) {
@@ -303,7 +326,6 @@ const Komentar = () => {
 
         // Optimistic Update for "Instant" feel
         const tempId = "temp-" + Date.now();
-        const isOwner = userName.toLowerCase().includes('wardhani') || userName.toLowerCase().includes('ekizr');
         const tempComment = {
             id: tempId,
             content: newComment,
@@ -322,9 +344,54 @@ const Komentar = () => {
 
         try {
             let profileImageUrl = null;
-            // Image upload logic skipped for mock simplicity
 
-            await supabase.from('portfolio_comments').insert([{
+            if (imageFile) {
+                // Compress and convert image to Base64
+                profileImageUrl = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+
+                            // Max dimensions 800px
+                            const MAX_WIDTH = 800;
+                            const MAX_HEIGHT = 800;
+
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            // High compression for profile shots
+                            resolve(canvas.toDataURL('image/jpeg', 0.6));
+                        };
+                        img.onerror = () => resolve(null);
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = () => resolve(null);
+                    reader.readAsDataURL(imageFile);
+
+                    // Fail-safe: resolve after 5 seconds anyway
+                    setTimeout(() => resolve(null), 5000);
+                });
+            }
+
+            const { data, error } = await supabase.from('portfolio_comments').insert([{
                 content: newComment,
                 user_name: userName,
                 profile_image: profileImageUrl,
@@ -332,10 +399,10 @@ const Komentar = () => {
                 parent_id: parentId || null
             }]);
 
-            // Refresh from DB to get real IDs and AI responses
+            if (error) throw error;
+
             await fetchData();
 
-            // Scroll to top if it's a new top-level comment (so it appears "underneath" the top form)
             if (!parentId) {
                 setTimeout(() => {
                     const scrollContainer = document.querySelector('.custom-scrollbar');
@@ -348,18 +415,32 @@ const Komentar = () => {
                 }, 100);
             }
 
-            // Trigger AI for top-level non-owner comments
+            const isOwner = userName.toLowerCase().includes('wardhani') || userName.toLowerCase().includes('ekizr');
             if (!parentId && !isOwner && genAI) {
-                await handleAIResponse(newComment, userName);
-                await fetchData();
+                try {
+                    await handleAIResponse(newComment, userName);
+                    await fetchData();
+                } catch (aiErr) {
+                    console.error("AI Response Error:", aiErr);
+                }
             }
 
         } catch (error) {
-            console.error(error);
-            // Revert on error
+            console.error("Submission error:", error);
+            // Revert optimistic update on error
             setComments(prev => prev.filter(c => c.id !== tempId));
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    const handleDeleteComment = async (id) => {
+        try {
+            const { error } = await supabase.from('portfolio_comments').delete().eq('id', id);
+            if (error) throw error;
+            fetchData();
+        } catch (error) {
+            console.error("Delete error:", error);
         }
     };
 
@@ -480,6 +561,7 @@ const Komentar = () => {
                                 isSubmitting={isSubmitting}
                                 replies={commentNode.replies}
                                 isPinned={String(commentNode.is_pinned) === "1" || commentNode.is_pinned === true}
+                                onDelete={handleDeleteComment}
                             />
                         ))
                     ) : (
