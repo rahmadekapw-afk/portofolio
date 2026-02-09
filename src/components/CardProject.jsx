@@ -43,7 +43,7 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
       <div className="relative h-full overflow-hidden bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 hover:shadow-lg transition-all duration-300 flex flex-col">
 
         {/* Image Section - Device Mockup */}
-        <div className="relative overflow-hidden cursor-pointer group/mockup py-8 px-4 bg-gray-50/50 dark:bg-zinc-900/50" onClick={(e) => id && handleDetails(e, id)}>
+        <div className="relative overflow-hidden cursor-pointer group/mockup py-6 px-4 bg-gray-50/50 dark:bg-zinc-900/50" onClick={(e) => id && handleDetails(e, id)}>
           <div className="hidden md:block">
             <DeviceMockup type="laptop" image={Img} />
           </div>
@@ -55,9 +55,9 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
         </div>
 
         {/* Content Section */}
-        <div className="p-4 flex-grow flex flex-col justify-between">
+        <div className="p-3 flex-grow flex flex-col justify-between">
           <div>
-            <h3 className="text-xl font-oswald font-bold uppercase text-black dark:text-white mb-2">
+            <h3 className="text-lg font-oswald font-bold uppercase text-black dark:text-white mb-2">
               {Title}
             </h3>
 

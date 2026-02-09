@@ -3,7 +3,7 @@ import React from 'react';
 const DeviceMockup = ({ type, image }) => {
     if (type === 'laptop') {
         return (
-            <div className="relative mx-auto w-full max-w-[600px] perspective-1000">
+            <div className="relative mx-auto w-full max-w-[500px] perspective-1000">
                 <div className="relative transition-transform duration-500 transform-gpu rotate-y-[-15deg] rotate-x-[5deg] hover:rotate-0 group">
                     {/* Laptop Screen */}
                     <div className="relative bg-zinc-800 rounded-t-xl p-2 pb-0 shadow-2xl border-x border-t border-zinc-700">

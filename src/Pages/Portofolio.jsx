@@ -234,33 +234,21 @@ export default function FullWidthTabs() {
           {/* Projects Tab */}
           <TabPanel value={value} index={0} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 projects-grid">
-                {displayedProjects.map((project, index) => {
-                  // Bento Grid Logic: 
-                  // First item: span 2 cols, 2 rows (Feature)
-                  // Second item: span 2 cols, 1 row
-                  // Third/Fourth: span 1 col, 1 row
-                  const isLarge = index === 0;
-                  const isMedium = index === 1;
-
-                  return (
-                    <div
-                      key={project.id || index}
-                      className={`project-card-container h-full ${isLarge ? "md:col-span-2 md:row-span-2" :
-                        isMedium ? "md:col-span-2 md:row-span-1" :
-                          "md:col-span-1"
-                        }`}
-                    >
-                      <CardProject
-                        Img={project.Img}
-                        Title={project.Title}
-                        Description={project.Description}
-                        Link={project.Link}
-                        id={project.id}
-                      />
-                    </div>
-                  );
-                })}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 projects-grid">
+                {displayedProjects.map((project, index) => (
+                  <div
+                    key={project.id || index}
+                    className="project-card-container h-full"
+                  >
+                    <CardProject
+                      Img={project.Img}
+                      Title={project.Title}
+                      Description={project.Description}
+                      Link={project.Link}
+                      id={project.id}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
             {projects.length > initialItems && (
