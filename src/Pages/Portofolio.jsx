@@ -15,6 +15,7 @@ import Certificate from "../components/Certificate";
 import { Code, Award, Boxes } from "lucide-react";
 import { projectData } from "../data/ProjectList";
 import { useLanguage } from "../context/LanguageContext";
+import { supabase } from "../supabase";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -101,7 +102,13 @@ export default function FullWidthTabs() {
   const { t } = useLanguage();
   const [value, setValue] = useState(0);
   const [projects, setProjects] = useState([]);
-  const [certificates, setCertificates] = useState([]);
+  const [certificates, setCertificates] = useState([
+    {
+      id: "sertifikat",
+      Title: "sertifikat",
+      Img: "/sertif.jpg"
+    }
+  ]);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [showAllCertificates, setShowAllCertificates] = useState(false);
   const isMobile = window.innerWidth < 768;
@@ -111,8 +118,40 @@ export default function FullWidthTabs() {
     AOS.init({
       once: true,
     });
-    setProjects(projectData);
-    localStorage.setItem("projects", JSON.stringify(projectData));
+
+    const fetchData = async () => {
+      try {
+        // Fetch projects from Supabase
+        const { data: projectsDataSupabase, error: projectsError } = await supabase
+          .from('projects')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!projectsError && projectsDataSupabase) {
+          setProjects(projectsDataSupabase);
+          localStorage.setItem("projects", JSON.stringify(projectsDataSupabase));
+        } else {
+          // Fallback to local data if Supabase is empty or fails
+          setProjects(projectData);
+        }
+
+        // Fetch certificates from Supabase
+        const { data: certificatesDataSupabase, error: certsError } = await supabase
+          .from('certificates')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!certsError && certificatesDataSupabase && certificatesDataSupabase.length > 0) {
+          setCertificates(certificatesDataSupabase);
+          localStorage.setItem("certificates", JSON.stringify(certificatesDataSupabase));
+        }
+      } catch (error) {
+        console.error("Error fetching data from Supabase:", error);
+        setProjects(projectData);
+      }
+    };
+
+    fetchData();
 
     // Initialize GSAP with a slight delay to ensure DOM is ready and measurements are correct
     const ctx = gsap.context(() => {

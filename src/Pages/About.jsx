@@ -1,6 +1,7 @@
-import React, { useEffect, memo, useMemo } from "react"
+import React, { useEffect, memo, useMemo, useState } from "react"
 import { FileText, Code, Award, Globe, ArrowUpRight } from "lucide-react"
 import { useLanguage } from "../context/LanguageContext"
+import { supabase } from "../supabase"
 import AOS from "aos"
 import "aos/dist/aos.css"
 import MagneticButton from "../components/MagneticButton"
@@ -97,46 +98,89 @@ const StatCard = memo(({ icon: Icon, value, label, description, animation }) => 
 // ================= MAIN COMPONENT =================
 const AboutPage = () => {
   const { t } = useLanguage();
-  const { totalProjects, totalCertificates, YearExperience } = useMemo(() => {
-    const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]")
-    const storedCertificates = JSON.parse(localStorage.getItem("certificates") || "[]")
-
-    const startDate = new Date("2021-11-06")
-    const today = new Date()
-    const experience =
-      today.getFullYear() -
-      startDate.getFullYear() -
-      (today < new Date(today.getFullYear(), startDate.getMonth(), startDate.getDate()) ? 1 : 0)
-
-    return {
-      totalProjects: storedProjects.length,
-      totalCertificates: storedCertificates.length,
-      YearExperience: experience,
-    }
-  }, [])
+  const [stats, setStats] = useState({
+    totalProjects: 0,
+    totalCertificates: 0,
+    YearExperience: 0
+  });
 
   useEffect(() => {
-    AOS.init({ once: false })
-  }, [])
+    AOS.init({ once: false });
+
+    const fetchData = async () => {
+      try {
+        // Fetch projects from Supabase
+        const { data: projectsData, error: projectsError } = await supabase
+          .from('projects')
+          .select('*');
+
+        // Fetch certificates from Supabase
+        const { data: certificatesData, error: certsError } = await supabase
+          .from('certificates')
+          .select('*');
+
+        const startDate = new Date("2021-11-06");
+        const today = new Date();
+        const experience =
+          today.getFullYear() -
+          startDate.getFullYear() -
+          (today < new Date(today.getFullYear(), startDate.getMonth(), startDate.getDate()) ? 1 : 0);
+
+        const totalProjects = !projectsError && projectsData ? projectsData.length : 0;
+        const totalCertificates = !certsError && certificatesData ? (certificatesData.length > 0 ? certificatesData.length : 1) : 1;
+
+        setStats({
+          totalProjects,
+          totalCertificates,
+          YearExperience: experience
+        });
+
+        // Sync with localStorage
+        if (!projectsError && projectsData) localStorage.setItem("projects", JSON.stringify(projectsData));
+        if (!certsError && certificatesData) localStorage.setItem("certificates", JSON.stringify(certificatesData));
+      } catch (error) {
+        console.error("Error fetching stats from Supabase:", error);
+
+        // Fallback to localStorage if API fails
+        const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
+        const storedCertificates = JSON.parse(localStorage.getItem("certificates") || "[]");
+
+        const startDate = new Date("2021-11-06");
+        const today = new Date();
+        const experience =
+          today.getFullYear() -
+          startDate.getFullYear() -
+          (today < new Date(today.getFullYear(), startDate.getMonth(), startDate.getDate()) ? 1 : 0);
+
+        setStats({
+          totalProjects: storedProjects.length,
+          totalCertificates: storedCertificates.length > 0 ? storedCertificates.length : 1,
+          YearExperience: experience
+        });
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const statsData = [
     {
       icon: Code,
-      value: totalProjects,
+      value: stats.totalProjects,
       label: t('about.statProjects'),
       description: "Web projects completed",
       animation: "fade-right",
     },
     {
       icon: Award,
-      value: totalCertificates,
+      value: stats.totalCertificates,
       label: "Certificates",
       description: "Skills & achievements",
       animation: "fade-up",
     },
     {
       icon: Globe,
-      value: YearExperience,
+      value: stats.YearExperience,
       label: t('about.statYears'),
       description: "Learning & building",
       animation: "fade-left",

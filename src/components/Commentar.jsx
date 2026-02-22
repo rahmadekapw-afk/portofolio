@@ -6,6 +6,7 @@ import { supabase } from '../supabase';
 import { useLanguage } from "../context/LanguageContext";
 import MagneticButton from './MagneticButton';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import Swal from 'sweetalert2';
 
 const Comment = memo(({
     comment,
@@ -310,6 +311,7 @@ const Komentar = () => {
             }
         } catch (error) {
             console.error("Fetch exception:", error);
+            console.warn("Discussion data currently unavailable");
         }
     };
 
@@ -429,6 +431,13 @@ const Komentar = () => {
             console.error("Submission error:", error);
             // Revert optimistic update on error
             setComments(prev => prev.filter(c => c.id !== tempId));
+
+            Swal.fire({
+                title: "Error!",
+                text: "Failed to post comment. " + (error.message || "Please check your connection."),
+                icon: "error",
+                confirmButtonColor: "#000"
+            });
         } finally {
             setIsSubmitting(false);
         }
