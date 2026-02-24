@@ -197,6 +197,17 @@ export default function FullWidthTabs() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleSwitchTab = (event) => {
+      if (typeof event.detail === 'number') {
+        setValue(event.detail);
+      }
+    };
+
+    window.addEventListener('switchTab', handleSwitchTab);
+    return () => window.removeEventListener('switchTab', handleSwitchTab);
+  }, []);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

@@ -79,20 +79,23 @@ const ProfileImage = memo(() => (
 ))
 
 // ================= STAT CARD =================
-const StatCard = memo(({ icon: Icon, value, label, description, animation }) => (
-  <div data-aos={animation} data-aos-duration="1300" className="w-full">
-    <div className="bg-transparent dark:bg-black p-8 border-2 border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors duration-300 group">
-      <div className="flex items-center justify-between mb-6">
-        <Icon className="w-12 h-12 text-black dark:text-white group-hover:text-white dark:group-hover:text-black transition-colors" />
-        <span className="text-5xl font-oswald font-bold tracking-tight">{value}</span>
-      </div>
-
-      <p className="text-lg font-bold uppercase tracking-wider mb-2">{label}</p>
-      <p className="text-sm text-gray-500 group-hover:text-gray-400 dark:text-gray-400 dark:group-hover:text-gray-600 flex justify-between items-center">
-        {description}
-        <ArrowUpRight className="w-4 h-4" />
-      </p>
+const StatCard = memo(({ icon: Icon, value, label, description, animation, onClick }) => (
+  <div
+    data-aos={animation}
+    data-aos-duration="1000"
+    onClick={onClick}
+    className={`p-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden ${onClick ? 'cursor-pointer hover:-translate-y-1' : ''}`}
+  >
+    <div className="flex items-center justify-between mb-6">
+      <Icon className="w-12 h-12 text-black dark:text-white group-hover:text-white dark:group-hover:text-black transition-colors" />
+      <span className="text-5xl font-oswald font-bold tracking-tight">{value}</span>
     </div>
+
+    <p className="text-lg font-bold uppercase tracking-wider mb-2">{label}</p>
+    <p className="text-sm text-gray-500 group-hover:text-gray-400 dark:text-gray-400 dark:group-hover:text-gray-600 flex justify-between items-center">
+      {description}
+      <ArrowUpRight className="w-4 h-4" />
+    </p>
   </div>
 ))
 
@@ -169,6 +172,27 @@ const AboutPage = () => {
     fetchData();
   }, []);
 
+  const handleStatClick = (label) => {
+    let targetId = '';
+    switch (label) {
+      case t('about.statProjects'):
+        targetId = 'Projects';
+        break;
+      case 'Certificates':
+        targetId = 'Certificates';
+        break;
+      case t('about.statYears'):
+        targetId = 'Experience';
+        break;
+      default:
+        return;
+    }
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const statsData = [
     {
       icon: Code,
@@ -176,6 +200,7 @@ const AboutPage = () => {
       label: t('about.statProjects'),
       description: "Web projects completed",
       animation: "fade-right",
+      onClick: () => handleStatClick(t('about.statProjects')),
     },
     {
       icon: Award,
@@ -183,6 +208,7 @@ const AboutPage = () => {
       label: "Certificates",
       description: "Skills & achievements",
       animation: "fade-up",
+      onClick: () => handleStatClick('Certificates'),
     },
     {
       icon: Globe,
@@ -190,6 +216,7 @@ const AboutPage = () => {
       label: t('about.statYears'),
       description: "Learning & building",
       animation: "fade-left",
+      onClick: () => handleStatClick(t('about.statYears')),
     },
   ]
 
@@ -232,9 +259,9 @@ const AboutPage = () => {
         <ProfileImage />
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 mt-24">
-        {statsData.map((stat) => (
-          <StatCard key={stat.label} {...stat} />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-16">
+        {statsData.map((stat, index) => (
+          <StatCard key={index} {...stat} />
         ))}
       </div>
     </div >
