@@ -5,6 +5,7 @@ import { supabase } from "../supabase"
 import AOS from "aos"
 import "aos/dist/aos.css"
 import MagneticButton from "../components/MagneticButton"
+import { projectData } from "../data/ProjectList"
 
 // ================= LOCATION BADGE =================
 const LocationBadge = memo(() => {
@@ -126,7 +127,12 @@ const AboutPage = () => {
           startDate.getFullYear() -
           (today < new Date(today.getFullYear(), startDate.getMonth(), startDate.getDate()) ? 1 : 0);
 
-        const totalProjects = !projectsError && projectsData ? projectsData.length : 0;
+        const storedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
+        const currentProjects = (!projectsError && projectsData && projectsData.length > 0)
+          ? projectsData
+          : (storedProjects.length > 0 ? storedProjects : projectData);
+
+        const totalProjects = currentProjects.length;
         const totalCertificates = !certsError && certificatesData ? (certificatesData.length > 0 ? certificatesData.length : 1) : 1;
 
         setStats({
@@ -135,9 +141,9 @@ const AboutPage = () => {
           YearExperience: experience
         });
 
-        // Sync with localStorage
-        if (!projectsError && projectsData) localStorage.setItem("projects", JSON.stringify(projectsData));
-        if (!certsError && certificatesData) localStorage.setItem("certificates", JSON.stringify(certificatesData));
+        // Sync with localStorage only if data is not empty
+        if (!projectsError && projectsData && projectsData.length > 0) localStorage.setItem("projects", JSON.stringify(projectsData));
+        if (!certsError && certificatesData && certificatesData.length > 0) localStorage.setItem("certificates", JSON.stringify(certificatesData));
       } catch (error) {
         console.error("Error fetching stats from Supabase:", error);
 

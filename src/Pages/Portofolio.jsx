@@ -127,7 +127,7 @@ export default function FullWidthTabs() {
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (!projectsError && projectsDataSupabase) {
+        if (!projectsError && projectsDataSupabase && projectsDataSupabase.length > 0) {
           setProjects(projectsDataSupabase);
           localStorage.setItem("projects", JSON.stringify(projectsDataSupabase));
         } else {
