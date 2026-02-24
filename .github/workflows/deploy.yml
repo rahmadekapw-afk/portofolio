@@ -1,4 +1,4 @@
-name: Deploy React Vite to Hosting
+name: Deploy React Vite Production
 
 on:
   push:
@@ -34,7 +34,5 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: dist/
-        server-dir: public_html/
+        server-dir: public_html/rahmadeka.com/
         dangerous-clean-slate: true
-
-        
