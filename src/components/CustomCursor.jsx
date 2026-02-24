@@ -5,6 +5,12 @@ const CustomCursor = () => {
     const followerRef = useRef(null);
 
     useEffect(() => {
+        // Check if device is mobile/touch
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+            (window.matchMedia("(pointer: coarse)").matches);
+
+        if (isMobile) return;
+
         const moveCursor = (e) => {
             const { clientX, clientY } = e;
 
@@ -13,8 +19,6 @@ const CustomCursor = () => {
             }
 
             if (followerRef.current) {
-                // Add a slight delay/smoothness to the follower if desired, 
-                // but strictly following mouse for now ensures "dot in circle" alignment
                 followerRef.current.style.transform = `translate3d(${clientX}px, ${clientY}px, 0)`;
             }
         };
@@ -30,7 +34,6 @@ const CustomCursor = () => {
             * {
                 cursor: none !important;
             }
-            /* Re-enable cursor for iframes or specific cases if needed, but mostly none */
         `;
         style.id = 'custom-cursor-style';
         document.head.appendChild(style);
@@ -44,6 +47,13 @@ const CustomCursor = () => {
             }
         };
     }, []);
+
+    // Check if mobile for conditional rendering
+    const isMobile = typeof navigator !== 'undefined' &&
+        (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+            (typeof window !== 'undefined' && window.matchMedia("(pointer: coarse)").matches));
+
+    if (isMobile) return null;
 
     return (
         <>
