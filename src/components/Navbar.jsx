@@ -94,40 +94,8 @@ const Navbar = () => {
     }, [isOpen]);
 
     useEffect(() => {
-        // Navbar & FAB Animation based on scroll
-        const ctx = gsap.context(() => {
-            // If scrolled and menu NOT open: Hide Nav, Show FAB
-            if (scrolled && !isOpen) {
-                gsap.to(navRef.current, {
-                    yPercent: -100,
-                    autoAlpha: 0,
-                    duration: 0.4,
-                    ease: "power2.out"
-                });
-                gsap.to(fabRef.current, {
-                    scale: 1,
-                    autoAlpha: 1,
-                    duration: 0.4,
-                    ease: "back.out(1.7)",
-                    delay: 0.1
-                });
-            } else {
-                gsap.to(navRef.current, {
-                    yPercent: 0,
-                    autoAlpha: 1,
-                    duration: 0.4,
-                    ease: "power2.out"
-                });
-                gsap.to(fabRef.current, {
-                    scale: 0,
-                    autoAlpha: 0,
-                    duration: 0.3,
-                    ease: "power2.in"
-                });
-            }
-        });
-
-        return () => ctx.revert();
+        // Simple Navbar shadow/background transition based on scroll
+        // Removed hiding logic to satisfy user request
     }, [scrolled, isOpen]);
 
     const scrollToSection = (e, href) => {
@@ -164,7 +132,7 @@ const Navbar = () => {
                                 onClick={(e) => scrollToSection(e, "#Home")}
                                 className="text-2xl sm:text-3xl font-oswald font-bold uppercase tracking-tighter text-black dark:text-white transition-opacity hover:opacity-80"
                             >
-                                RAHMADEKA
+                                WARDHANI
                             </a>
                         </div>
 
@@ -240,19 +208,7 @@ const Navbar = () => {
                 </div>
             </nav>
 
-            {/* Floating Action Button */}
-            <motion.div
-                ref={fabRef}
-                className="fixed top-6 right-[5%] z-[60] opacity-0 scale-0"
-            >
-                <MagneticButton
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="p-3 rounded-full bg-white dark:bg-black text-black dark:text-white shadow-lg border border-gray-200 dark:border-zinc-700 cursor-pointer"
-                    aria-label="Open Menu"
-                >
-                    <Menu className="w-6 h-6" />
-                </MagneticButton>
-            </motion.div>
+            {/* FAB Removed per user request to keep main navbar visible */}
 
             {/* Universal Overlay Menu */}
             <div
