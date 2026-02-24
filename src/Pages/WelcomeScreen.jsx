@@ -16,7 +16,7 @@ const TypewriterEffect = ({ text }) => {
       } else {
         clearInterval(timer);
       }
-    }, 260);
+    }, 80);
 
     return () => clearInterval(timer);
   }, [text]);
@@ -109,20 +109,24 @@ const ChromaKeyVideo = ({ src }) => {
     // Force play
     const startPlay = async () => {
       try {
-        video.currentTime = 0;
-        await video.play();
+        if (video.paused) {
+          await video.play();
+        }
       } catch (err) {
         console.error("Autoplay failed:", err);
+        setTimeout(startPlay, 1000);
       }
     };
 
     if (video.readyState >= 3) {
       startPlay();
     } else {
+      video.addEventListener('canplay', startPlay);
       video.addEventListener('loadeddata', startPlay);
     }
 
     return () => {
+      video.removeEventListener('canplay', startPlay);
       video.removeEventListener('loadeddata', startPlay);
       cancelAnimationFrame(animationFrameId);
     };
@@ -135,8 +139,12 @@ const ChromaKeyVideo = ({ src }) => {
         src={src}
         muted
         playsInline
+        autoPlay
         loop
-        className="hidden"
+        preload="auto"
+        type="video/mp4"
+        className="absolute opacity-0 pointer-events-none"
+        style={{ width: '1px', height: '1px' }}
       />
       <canvas
         ref={canvasRef}
