@@ -6,7 +6,7 @@ Let me introduce myself, I'm **Eki Zulfar Rachman**. On this occasion, I'd like 
 
 ## 🚀 Live Demo
 
-**Website Link:** [https://www.eki.my.id/](https://www.eki.my.id/)
+**Website Link:** [https://www.rahmadeka.com/](https://www.rahmadeka.com/)
 
 ## 🛠️ Tech Stack
 
@@ -239,7 +239,7 @@ If you have any questions or need help with the setup, feel free to reach out\!
 
 **Eki Zulfar Rachman**
 
-  - Website: [https://www.eki.my.id/](https://www.eki.my.id/)
+  - Website: [https://www.rahmadeka.com/](https://www.rahmadeka.com/)
   - GitHub: [EkiZR](https://github.com/EkiZR)
 
 -----
