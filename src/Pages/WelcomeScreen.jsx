@@ -49,16 +49,15 @@ const ChromaKeyVideo = ({ src }) => {
     let animationFrameId;
 
     const render = () => {
-      // Always loop, but only draw if adequate data
-      if (video.readyState >= 2) { // 2 = HAVE_CURRENT_DATA
+      if (video.readyState >= 2) {
         const rect = canvas.getBoundingClientRect();
-
-        // Match canvas internal resolution to display size * DPR (Super-sampling)
         const displayWidth = rect.width || video.videoWidth;
         const displayHeight = rect.height || video.videoHeight;
 
-        // Use a higher multiplier (minimum 2x, or 2.5x for crispness)
-        const dprMultiplier = Math.max(window.devicePixelRatio || 1, 2) * 1.2;
+        // Cap DPR multiplier to avoid memory issues on high-end mobile devices
+        const dpr = window.devicePixelRatio || 1;
+        const dprMultiplier = Math.min(dpr, 2.0);
+
         const targetWidth = Math.floor(displayWidth * dprMultiplier);
         const targetHeight = Math.floor(displayHeight * dprMultiplier);
 
@@ -72,48 +71,35 @@ const ChromaKeyVideo = ({ src }) => {
         try {
           const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = frame.data;
-          const length = data.length;
 
-          for (let i = 0; i < length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i], g = data[i + 1], b = data[i + 2];
             const maxRB = Math.max(r, b);
             const difference = g - maxRB;
 
-            // Sharper thresholds for cleaner edges
-            const threshold = 18;
-            const feather = 15; // Reduced from 30 for sharper output
-
-            if (g > maxRB && difference > threshold) {
-              const alpha = Math.max(0, 1 - (difference - threshold) / feather);
+            if (g > maxRB && difference > 18) {
+              const alpha = Math.max(0, 1 - (difference - 18) / 15);
               data[i + 3] = Math.floor(alpha * 255);
-              if (alpha < 0.9) {
-                // Color spill reduction
-                data[i + 1] = Math.floor(g * 0.6);
-              }
+              if (alpha < 0.9) data[i + 1] = Math.floor(g * 0.6);
             }
           }
-
           ctx.putImageData(frame, 0, 0);
         } catch (e) {
-          // Canvas tainted or other error
+          console.error("Canvas error:", e);
         }
       }
-
       animationFrameId = requestAnimationFrame(render);
     };
 
     render();
 
-    // Force play
     const startPlay = async () => {
       try {
         if (video.paused) {
           await video.play();
         }
       } catch (err) {
-        console.error("Autoplay failed:", err);
+        console.error("Video play failed:", err);
         setTimeout(startPlay, 1000);
       }
     };
@@ -122,11 +108,13 @@ const ChromaKeyVideo = ({ src }) => {
       startPlay();
     } else {
       video.addEventListener('canplay', startPlay);
+      video.addEventListener('canplaythrough', startPlay);
       video.addEventListener('loadeddata', startPlay);
     }
 
     return () => {
       video.removeEventListener('canplay', startPlay);
+      video.removeEventListener('canplaythrough', startPlay);
       video.removeEventListener('loadeddata', startPlay);
       cancelAnimationFrame(animationFrameId);
     };
@@ -137,22 +125,20 @@ const ChromaKeyVideo = ({ src }) => {
       <video
         ref={videoRef}
         src={src}
-        muted
-        playsInline
-        autoPlay
-        loop
+        muted={true}
+        playsInline={true}
+        autoPlay={true}
+        loop={true}
+        crossOrigin="anonymous"
         preload="auto"
-        type="video/mp4"
-        className="absolute opacity-0 pointer-events-none"
-        style={{ width: '1px', height: '1px' }}
+        className="fixed top-[-100%] left-[-100%] w-1 h-1 pointer-events-none opacity-0"
       />
       <canvas
         ref={canvasRef}
-        className="w-full h-full object-contain drop-shadow-2xl"
+        className="w-full h-full object-contain drop-shadow-2xl translate-z-0"
         style={{
-          width: '100%',
-          height: '100%',
-          filter: 'contrast(1.1) brightness(1.05) saturate(1.1)'
+          filter: 'contrast(1.1) brightness(1.05) saturate(1.1)',
+          willChange: 'transform'
         }}
       />
     </div>
