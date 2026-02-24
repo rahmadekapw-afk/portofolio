@@ -84,18 +84,24 @@ const StatCard = memo(({ icon: Icon, value, label, description, animation, onCli
     data-aos={animation}
     data-aos-duration="1000"
     onClick={onClick}
-    className={`p-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden ${onClick ? 'cursor-pointer hover:-translate-y-1' : ''}`}
+    className={`p-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden transition-all active:scale-95 ${onClick ? 'cursor-pointer hover:-translate-y-1' : ''}`}
+    style={{ touchAction: 'manipulation' }}
   >
-    <div className="flex items-center justify-between mb-6">
-      <Icon className="w-12 h-12 text-black dark:text-white group-hover:text-white dark:group-hover:text-black transition-colors" />
-      <span className="text-5xl font-oswald font-bold tracking-tight">{value}</span>
+    <div className="relative z-10 pointer-events-none">
+      <div className="flex items-center justify-between mb-6">
+        <Icon className="w-12 h-12 text-black dark:text-white group-hover:text-white dark:group-hover:text-black transition-colors" />
+        <span className="text-5xl font-oswald font-bold tracking-tight">{value}</span>
+      </div>
+
+      <p className="text-lg font-bold uppercase tracking-wider mb-2">{label}</p>
+      <p className="text-sm text-gray-500 group-hover:text-gray-400 dark:text-gray-400 dark:group-hover:text-gray-600 flex justify-between items-center">
+        {description}
+        <ArrowUpRight className="w-4 h-4" />
+      </p>
     </div>
 
-    <p className="text-lg font-bold uppercase tracking-wider mb-2">{label}</p>
-    <p className="text-sm text-gray-500 group-hover:text-gray-400 dark:text-gray-400 dark:group-hover:text-gray-600 flex justify-between items-center">
-      {description}
-      <ArrowUpRight className="w-4 h-4" />
-    </p>
+    {/* Hover/Tap Background Effect */}
+    <div className="absolute inset-0 bg-black dark:bg-white opacity-0 group-hover:opacity-10 dark:group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
   </div>
 ))
 
@@ -172,25 +178,18 @@ const AboutPage = () => {
     fetchData();
   }, []);
 
-  const handleStatClick = (label) => {
-    let targetId = '';
-    switch (label) {
-      case t('about.statProjects'):
-        targetId = 'Projects';
-        break;
-      case 'Certificates':
-        targetId = 'Certificates';
-        break;
-      case t('about.statYears'):
-        targetId = 'Experience';
-        break;
-      default:
-        return;
-    }
-    const targetElement = document.getElementById(targetId);
+  const handleStatClick = (index) => {
+    // 1. Scroll to Portfolio section
+    const targetElement = document.getElementById('Portofolio');
     if (targetElement) {
       targetElement.scrollIntoView({ behavior: 'smooth' });
     }
+
+    // 2. Dispatch custom event to switch tab
+    // We use a slight delay to ensure the scroll starts before tab switching
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('switchTab', { detail: index }));
+    }, 100);
   };
 
   const statsData = [
@@ -200,7 +199,7 @@ const AboutPage = () => {
       label: t('about.statProjects'),
       description: "Web projects completed",
       animation: "fade-right",
-      onClick: () => handleStatClick(t('about.statProjects')),
+      onClick: () => handleStatClick(0),
     },
     {
       icon: Award,
@@ -208,7 +207,7 @@ const AboutPage = () => {
       label: "Certificates",
       description: "Skills & achievements",
       animation: "fade-up",
-      onClick: () => handleStatClick('Certificates'),
+      onClick: () => handleStatClick(1),
     },
     {
       icon: Globe,
@@ -216,7 +215,7 @@ const AboutPage = () => {
       label: t('about.statYears'),
       description: "Learning & building",
       animation: "fade-left",
-      onClick: () => handleStatClick(t('about.statYears')),
+      onClick: () => handleStatClick(2),
     },
   ]
 
