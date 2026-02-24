@@ -148,10 +148,11 @@ const Navbar = () => {
             {/* Main Navbar */}
             <nav
                 ref={navRef}
-                className={`fixed w-full top-0 z-50 transition-colors duration-300 ${!scrolled ? "bg-transparent" : "bg-white/80 dark:bg-black/80 border-b border-gray-200 dark:border-zinc-800 backdrop-blur-md -webkit-backdrop-filter:blur(12px)"
+                className={`fixed w-full top-0 z-50 transition-all duration-300 ${!scrolled ? "bg-transparent" : "bg-white/80 dark:bg-black/80 border-b border-gray-200 dark:border-zinc-800 backdrop-blur-md"
                     }`}
                 style={{
                     paddingTop: 'env(safe-area-inset-top)',
+                    WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none'
                 }}
             >
                 <div className="mx-auto px-[5%] sm:px-[5%] lg:px-[10%]">
@@ -161,9 +162,9 @@ const Navbar = () => {
                             <a
                                 href="#Home"
                                 onClick={(e) => scrollToSection(e, "#Home")}
-                                className="text-3xl font-oswald font-bold uppercase tracking-tighter text-black dark:text-white"
+                                className="text-2xl sm:text-3xl font-oswald font-bold uppercase tracking-tighter text-black dark:text-white transition-opacity hover:opacity-80"
                             >
-                                WARDHANI
+                                RAHMADEKA
                             </a>
                         </div>
 
@@ -214,25 +215,25 @@ const Navbar = () => {
                             </div>
                         </div>
 
-                        {/* Mobile Menu Button (Only for standard navbar structure, hidden if scrolled via GSAP on nav) */}
-                        <div className="md:hidden flex items-center gap-4">
+                        {/* Mobile Menu Button */}
+                        <div className="md:hidden flex items-center gap-2 sm:gap-4">
                             <button
                                 onClick={toggleLanguage}
-                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700 font-bold font-oswald w-10 h-10 flex items-center justify-center text-sm"
+                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700 font-bold font-oswald w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs sm:text-sm"
                             >
                                 {language.toUpperCase()}
                             </button>
                             <button
                                 onClick={toggleTheme}
-                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700"
+                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center"
                             >
-                                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                                {theme === 'dark' ? <Sun className="w-4 h-4 sm:w-5 sm:h-5" /> : <Moon className="w-4 h-4 sm:w-5 sm:h-5" />}
                             </button>
                             <MagneticButton
                                 onClick={() => setIsOpen(true)}
-                                className="relative p-2 text-black dark:text-white bg-transparent border-none cursor-pointer"
+                                className="relative p-2 text-black dark:text-white bg-transparent border-none cursor-pointer w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center"
                             >
-                                <Menu className="w-6 h-6" />
+                                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
                             </MagneticButton>
                         </div>
                     </div>
@@ -256,7 +257,8 @@ const Navbar = () => {
             {/* Universal Overlay Menu */}
             <div
                 ref={overlayRef}
-                className="fixed inset-0 z-[70] bg-white/95 dark:bg-black/95 backdrop-blur-md -webkit-backdrop-filter:blur(20px) opacity-0 invisible"
+                className="fixed inset-0 z-[70] bg-white/95 dark:bg-black/95 backdrop-blur-md opacity-0 invisible"
+                style={{ WebkitBackdropFilter: 'blur(20px)' }}
             >
                 {/* Language Toggle - Top Left */}
                 <button

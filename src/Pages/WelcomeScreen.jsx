@@ -268,25 +268,23 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
                 className="text-center mb-6 sm:mb-8 md:mb-12"
                 variants={childVariants}
               >
-                <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold space-y-2 sm:space-y-4">
-                  <div className="mb-2 sm:mb-4">
-                    <span data-aos="fade-right" data-aos-delay="200" className="inline-block px-2 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
+                <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold space-y-1 sm:space-y-4">
+                  <div className="mb-1 sm:mb-4 flex flex-wrap justify-center items-center gap-x-2 sm:gap-x-4">
+                    <span data-aos="fade-right" data-aos-delay="200" className="inline-block px-1 sm:px-2 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
                       Welcome
-                    </span>{' '}
-                    <span data-aos="fade-right" data-aos-delay="400" className="inline-block px-2 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
+                    </span>
+                    <span data-aos="fade-right" data-aos-delay="400" className="inline-block px-1 sm:px-2 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
                       To
-                    </span>{' '}
-                    <span data-aos="fade-right" data-aos-delay="600" className="inline-block px-2 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
+                    </span>
+                    <span data-aos="fade-right" data-aos-delay="600" className="inline-block px-1 sm:px-2 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
                       My
                     </span>
                   </div>
-                  <div>
+                  <div className="flex flex-col sm:block">
                     <span data-aos="fade-up" data-aos-delay="800" className="inline-block px-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                       Portfolio
-                    </span>{' '}
-                  </div>
-                  < div>
-                    <span data-aos="fade-up" data-aos-delay="1000" className="inline-block px-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    </span>
+                    <span data-aos="fade-up" data-aos-delay="1000" className="inline-block px-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent sm:ml-2">
                       Website
                     </span>
                   </div>
@@ -295,22 +293,22 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
 
               {/* Website Link */}
               <motion.div
-                className="text-center mt-24 sm:mt-32"
+                className="text-center mt-12 sm:mt-24 md:mt-32"
                 variants={childVariants}
                 data-aos="fade-up"
                 data-aos-delay="1200"
               >
                 <a
                   href="https://www.linkedin.com/in/putra-wardhani-1497383a9/"
-                  className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-full relative group hover:scale-105 transition-transform duration-300"
+                  className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-full relative group hover:scale-105 transition-transform duration-300 mx-auto"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 rounded-full blur-md group-hover:blur-lg transition-all duration-300" />
-                  <div className="relative flex items-center gap-2 text-lg sm:text-xl md:text-2xl">
+                  <div className="relative flex items-center gap-2 text-base sm:text-xl md:text-2xl">
                     <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
-                    <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                      <TypewriterEffect text="www.ahmadeka.com" />
+                    <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent font-medium">
+                      <TypewriterEffect text="www.rahmadeka.com" />
                     </span>
                   </div>
                 </a>

@@ -45,15 +45,13 @@ const LocationBadge = memo(() => {
 const Header = memo(() => {
   const { t } = useLanguage();
   return (
-    <div className="text-center lg:mb-16 mb-10 px-[5%]">
-      <h2
-        className="text-4xl md:text-5xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white"
-        data-aos="fade-down"
-        data-aos-duration="600"
-      >
+    <div className="text-center pb-8 pt-12 md:pb-12 md:pt-20 portfolio-header">
+      <h2 className="text-3xl md:text-5xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white mb-4">
         {t('about.title')}
       </h2>
-      <div className="w-24 h-2 bg-black dark:bg-white mx-auto mt-4"></div>
+      <p className="text-gray-500 font-medium tracking-wide uppercase text-xs md:text-base max-w-2xl mx-auto px-4">
+        {t('about.subtitle')}
+      </p>
     </div>
   );
 })
@@ -203,7 +201,7 @@ const AboutPage = () => {
             <LocationBadge />
           </div>
           <h2
-            className="text-4xl md:text-5xl font-oswald font-bold uppercase mb-8 leading-tight"
+            className="text-3xl md:text-5xl font-oswald font-bold uppercase mb-6 md:mb-8 leading-tight"
             data-aos="fade-right"
           >
             Rahmad Eka Putra Wardhani

@@ -86,8 +86,8 @@ export const translations = {
             contact: "KONTAK",
         },
         hero: {
-            title: "PENGEMBANG",
-            subtitle: "FULLSTACK",
+            title: "FULLSTACK",
+            subtitle: "DEVELOPER",
             greeting: "Tersedia untuk Proyek",
             description: "Menciptakan solusi digital yang inovatif, fungsional, dan ramah pengguna dengan fokus pada desain bersih dan kinerja tinggi.",
             ctaProjects: "PROYEK",
@@ -100,7 +100,7 @@ export const translations = {
             statYears: "TAHUN PENGALAMAN",
             statProjects: "PROYEK SELESAI",
             statClients: "KLIEN PUAS",
-            location: "Berdiam di Indonesia",
+            location: "Berdomisili di Indonesia",
             quote: "\"Kode itu seperti humor. Kalau harus dijelaskan, berarti buruk.\"",
         },
         projects: {

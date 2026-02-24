@@ -53,7 +53,7 @@ const SocialLink = memo(({ icon: Icon, link }) => (
 const TYPING_SPEED = 100;
 const ERASING_SPEED = 50;
 const PAUSE_DURATION = 2000;
-const WORDS = ["Network Engineer", "Tech Enthusiast"]; // Updated words for professional look
+const WORDS = ["Fullstack Developer", "Network Engineer", "Tech Enthusiast"]; // Updated words for professional look
 const TECH_STACK = ["React", "Javascript", "Node.js", "Tailwind"];
 const SOCIAL_LINKS = [
   { icon: Github, link: "https://github.com/rahmadekapw-afk" },
@@ -129,8 +129,8 @@ const Home = () => {
               data-aos-delay="200">
               <div className="space-y-6">
                 <StatusBadge />
-                <div className="space-y-1" data-aos="fade-up" data-aos-delay="600">
-                  <h1 className="text-4xl sm:text-6xl md:text-8xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white leading-[0.9] break-words">
+                <div className="space-y-2" data-aos="fade-up" data-aos-delay="600">
+                  <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white leading-[0.85] break-words">
                     {t('hero.title')}
                     <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-b from-black to-gray-400 dark:from-white dark:to-zinc-500">
@@ -162,13 +162,13 @@ const Home = () => {
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-wrap gap-4 w-full justify-start mt-8" data-aos="fade-up" data-aos-delay="1400">
+                <div className="flex flex-col sm:flex-row gap-4 w-full justify-start mt-8" data-aos="fade-up" data-aos-delay="1400">
                   <CTAButton href="#Portofolio" text={t('hero.ctaProjects')} icon={ExternalLink} />
                   <CTAButton href="#Contact" text={t('hero.ctaContact')} icon={Mail} />
                 </div>
 
                 {/* Social Links */}
-                <div className="hidden sm:flex gap-4 justify-start mt-8" data-aos="fade-up" data-aos-delay="1600">
+                <div className="flex gap-4 justify-start mt-8" data-aos="fade-up" data-aos-delay="1600">
                   {SOCIAL_LINKS.map((social, index) => (
                     <SocialLink key={index} {...social} />
                   ))}

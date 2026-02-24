@@ -5,11 +5,21 @@ const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguage] = useState(() => {
+        // Check if mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) return 'en';
+
         // Check localStorage or default to 'en'
         return localStorage.getItem('language') || 'en';
     });
 
     useEffect(() => {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+            setLanguage('en');
+            localStorage.setItem('language', 'en');
+            return;
+        }
         localStorage.setItem('language', language);
         // Optional: Update html lang attribute
         document.documentElement.lang = language;

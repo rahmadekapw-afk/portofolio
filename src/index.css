@@ -11,11 +11,6 @@
 	scroll-behavior: smooth;
 	scrollbar-width: thin;
 	scrollbar-color: rgba(99, 102, 241, 0.3) rgba(12, 5, 53, 0.356);
-	/* Handle safe areas for mobile notches */
-	padding-top: env(safe-area-inset-top, 0px);
-	padding-bottom: env(safe-area-inset-bottom, 0px);
-	padding-left: env(safe-area-inset-left, 0px);
-	padding-right: env(safe-area-inset-right, 0px);
 }
 
 @layer base {
@@ -88,7 +83,9 @@
 html,
 body {
 	overflow-x: hidden;
-	width: 100%;
+	width: 100vw;
+	max-width: 100%;
+	min-height: 100vh;
 	position: relative;
 	background-color: hsl(var(--background));
 	color: hsl(var(--foreground));
@@ -96,6 +93,9 @@ body {
 	transition: background-color 0.3s ease, color 0.3s ease;
 	/* Prevent horizontal scroll on some mobile browsers */
 	-webkit-overflow-scrolling: touch;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 @keyframes blob {
