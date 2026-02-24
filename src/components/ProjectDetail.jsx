@@ -23,11 +23,11 @@ const TechBadge = ({ tech }) => {
   const Icon = TECH_ICONS[tech] || TECH_ICONS["default"];
 
   return (
-    <div className="group relative overflow-hidden px-3 py-2 md:px-4 md:py-2.5 bg-gray-100 dark:bg-white/10 rounded-xl border border-gray-200 dark:border-white/10 hover:border-blue-500/30 transition-all duration-300 cursor-default">
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/10 group-hover:to-purple-500/10 transition-all duration-500" />
+    <div className="group relative overflow-hidden px-3 py-2 md:px-4 md:py-2.5 bg-gray-100 dark:bg-white/10 rounded-xl border border-gray-200 dark:border-white/10 hover:border-black dark:hover:border-white transition-all duration-300 cursor-default">
+      <div className="absolute inset-0 bg-gradient-to-r from-gray-500/0 to-zinc-500/0 group-hover:from-black/5 group-hover:to-zinc-500/5 transition-all duration-500" />
       <div className="relative flex items-center gap-1.5 md:gap-2">
-        <Icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-600 dark:text-blue-400 group-hover:text-blue-500 dark:group-hover:text-blue-300 transition-colors" />
-        <span className="text-xs md:text-sm font-medium text-gray-700 dark:text-blue-200 group-hover:text-blue-600 dark:group-hover:text-blue-100 transition-colors">
+        <Icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-black dark:text-white group-hover:scale-110 transition-transform" />
+        <span className="text-xs md:text-sm font-medium text-gray-700 dark:text-zinc-300 group-hover:text-black dark:group-hover:text-white transition-colors">
           {tech}
         </span>
       </div>
@@ -39,8 +39,8 @@ const FeatureItem = ({ feature }) => {
   return (
     <li className="group flex items-start space-x-3 p-2.5 md:p-3.5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all duration-300 border border-transparent hover:border-gray-200 dark:hover:border-white/10">
       <div className="relative mt-2">
-        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-full blur group-hover:opacity-100 opacity-0 transition-opacity duration-300" />
-        <div className="relative w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-blue-600 dark:bg-blue-400 group-hover:scale-125 transition-transform duration-300" />
+        <div className="absolute -inset-1 bg-gradient-to-r from-gray-600/20 to-zinc-600/20 rounded-full blur group-hover:opacity-100 opacity-0 transition-opacity duration-300" />
+        <div className="relative w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-black dark:bg-white group-hover:scale-125 transition-transform duration-300" />
       </div>
       <span className="text-sm md:text-base text-gray-700 dark:text-gray-300 group-hover:text-black dark:group-hover:text-white transition-colors">
         {feature}
@@ -54,25 +54,25 @@ const ProjectStats = ({ project }) => {
   const featuresCount = project?.Features?.length || 0;
 
   return (
-    <div className="grid grid-cols-2 gap-3 md:gap-4 p-3 md:p-4 bg-gray-50 dark:bg-[#0a0a1a] rounded-xl overflow-hidden relative border border-gray-200 dark:border-transparent">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/5 to-purple-900/5 dark:from-blue-900/20 dark:to-purple-900/20 opacity-50 blur-2xl z-0" />
+    <div className="grid grid-cols-2 gap-3 md:gap-4 p-3 md:p-4 bg-gray-50 dark:bg-zinc-900 rounded-xl overflow-hidden relative border border-gray-200 dark:border-zinc-800">
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900/5 to-zinc-900/5 dark:from-white/5 dark:to-zinc-100/5 opacity-50 blur-2xl z-0" />
 
-      <div className="relative z-10 flex items-center space-x-2 md:space-x-3 bg-white dark:bg-white/5 p-2 md:p-3 rounded-lg border border-gray-100 dark:border-blue-500/20 transition-all duration-300 hover:scale-105 hover:border-blue-500/50 hover:shadow-lg">
-        <div className="bg-blue-100 dark:bg-blue-500/20 p-1.5 md:p-2 rounded-full">
-          <Code2 className="text-blue-600 dark:text-blue-300 w-4 h-4 md:w-6 md:h-6" strokeWidth={1.5} />
+      <div className="relative z-10 flex items-center space-x-2 md:space-x-3 bg-white dark:bg-white/5 p-2 md:p-3 rounded-lg border border-gray-100 dark:border-white/10 transition-all duration-300 hover:scale-105 hover:border-black dark:hover:border-white hover:shadow-lg">
+        <div className="bg-gray-100 dark:bg-white/10 p-1.5 md:p-2 rounded-full">
+          <Code2 className="text-black dark:text-white w-4 h-4 md:w-6 md:h-6" strokeWidth={1.5} />
         </div>
         <div className="flex-grow">
-          <div className="text-lg md:text-xl font-semibold text-gray-900 dark:text-blue-200">{techStackCount}</div>
+          <div className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">{techStackCount}</div>
           <div className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">Total Teknologi</div>
         </div>
       </div>
 
-      <div className="relative z-10 flex items-center space-x-2 md:space-x-3 bg-white dark:bg-white/5 p-2 md:p-3 rounded-lg border border-gray-100 dark:border-purple-500/20 transition-all duration-300 hover:scale-105 hover:border-purple-500/50 hover:shadow-lg">
-        <div className="bg-purple-100 dark:bg-purple-500/20 p-1.5 md:p-2 rounded-full">
-          <Layers className="text-purple-600 dark:text-purple-300 w-4 h-4 md:w-6 md:h-6" strokeWidth={1.5} />
+      <div className="relative z-10 flex items-center space-x-2 md:space-x-3 bg-white dark:bg-white/5 p-2 md:p-3 rounded-lg border border-gray-100 dark:border-white/10 transition-all duration-300 hover:scale-105 hover:border-black dark:hover:border-white hover:shadow-lg">
+        <div className="bg-gray-100 dark:bg-white/10 p-1.5 md:p-2 rounded-full">
+          <Layers className="text-black dark:text-white w-4 h-4 md:w-6 md:h-6" strokeWidth={1.5} />
         </div>
         <div className="flex-grow">
-          <div className="text-lg md:text-xl font-semibold text-gray-900 dark:text-purple-200">{featuresCount}</div>
+          <div className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">{featuresCount}</div>
           <div className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">Fitur Utama</div>
         </div>
       </div>
@@ -122,7 +122,7 @@ const ProjectDetails = () => {
     return (
       <div className="min-h-screen bg-white dark:bg-[#030014] flex items-center justify-center">
         <div className="text-center space-y-6">
-          <div className="w-16 h-16 md:w-24 md:h-24 mx-auto border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+          <div className="w-16 h-16 md:w-24 md:h-24 mx-auto border-4 border-black/10 dark:border-white/10 border-t-black dark:border-t-white rounded-full animate-spin" />
           <h2 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white">Loading Project...</h2>
         </div>
       </div>
@@ -133,10 +133,10 @@ const ProjectDetails = () => {
     <div className="min-h-screen bg-white dark:bg-[#030014] px-[2%] sm:px-0 relative overflow-hidden transition-colors duration-300">
       {/* Background animations */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute -inset-[10px] opacity-20 dark:opacity-20 opacity-30">
-          <div className="absolute top-0 -left-4 w-72 md:w-96 h-72 md:h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
-          <div className="absolute top-0 -right-4 w-72 md:w-96 h-72 md:h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
-          <div className="absolute -bottom-8 left-20 w-72 md:w-96 h-72 md:h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000" />
+        <div className="absolute -inset-[10px] opacity-10 dark:opacity-10 opacity-20">
+          <div className="absolute top-0 -left-4 w-72 md:w-96 h-72 md:h-96 bg-gray-500 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
+          <div className="absolute top-0 -right-4 w-72 md:w-96 h-72 md:h-96 bg-zinc-500 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
+          <div className="absolute -bottom-8 left-20 w-72 md:w-96 h-72 md:h-96 bg-slate-500 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000" />
         </div>
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.02] dark:invert" />
       </div>

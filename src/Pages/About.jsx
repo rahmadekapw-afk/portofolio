@@ -80,29 +80,34 @@ const ProfileImage = memo(() => (
 
 // ================= STAT CARD =================
 const StatCard = memo(({ icon: Icon, value, label, description, animation, onClick }) => (
-  <div
+  <button
     data-aos={animation}
     data-aos-duration="1000"
     onClick={onClick}
-    className={`p-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden transition-all active:scale-95 ${onClick ? 'cursor-pointer hover:-translate-y-1' : ''}`}
-    style={{ touchAction: 'manipulation' }}
+    className="w-full text-left p-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-sm hover:shadow-xl transition-all duration-300 group relative overflow-hidden active:scale-95 cursor-pointer"
   >
-    <div className="relative z-10 pointer-events-none">
+    <div className="relative z-10">
       <div className="flex items-center justify-between mb-6">
-        <Icon className="w-12 h-12 text-black dark:text-white group-hover:text-white dark:group-hover:text-black transition-colors" />
-        <span className="text-5xl font-oswald font-bold tracking-tight">{value}</span>
+        <div className="p-3 bg-black dark:bg-white rounded-lg group-hover:bg-zinc-800 dark:group-hover:bg-zinc-200 transition-colors duration-300">
+          <Icon className="w-6 h-6 text-white dark:text-black group-hover:text-white dark:group-hover:text-black transition-colors" />
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-5xl font-oswald font-bold tracking-tight text-black dark:text-white group-hover:text-zinc-800 dark:group-hover:text-zinc-200 transition-colors">
+            {value}
+          </span>
+        </div>
       </div>
 
-      <p className="text-lg font-bold uppercase tracking-wider mb-2">{label}</p>
-      <p className="text-sm text-gray-500 group-hover:text-gray-400 dark:text-gray-400 dark:group-hover:text-gray-600 flex justify-between items-center">
+      <h3 className="text-lg font-black uppercase tracking-wider mb-1 text-black dark:text-white">{label}</h3>
+      <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest flex justify-between items-center group-hover:text-black dark:group-hover:text-white transition-colors">
         {description}
-        <ArrowUpRight className="w-4 h-4" />
+        <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
       </p>
     </div>
 
-    {/* Hover/Tap Background Effect */}
-    <div className="absolute inset-0 bg-black dark:bg-white opacity-0 group-hover:opacity-10 dark:group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
-  </div>
+    {/* Nike style accent bar */}
+    <div className="absolute top-0 right-0 w-2 h-full bg-black dark:bg-white transform translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></div>
+  </button>
 ))
 
 // ================= MAIN COMPONENT =================
@@ -185,11 +190,16 @@ const AboutPage = () => {
       targetElement.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // 2. Dispatch custom event to switch tab
-    // We use a slight delay to ensure the scroll starts before tab switching
+    // 2. Dispatch custom event with slight delay to ensure scroll is initiated
+    // Using a more persistent approach for the event
     setTimeout(() => {
-      window.dispatchEvent(new CustomEvent('switchTab', { detail: index }));
-    }, 100);
+      const event = new CustomEvent('switchTab', {
+        detail: index,
+        bubbles: true,
+        composed: true
+      });
+      window.dispatchEvent(event);
+    }, 300); // Increased delay for better reliability
   };
 
   const statsData = [

@@ -5,21 +5,11 @@ const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguage] = useState(() => {
-        // Check if mobile
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        if (isMobile) return 'en';
-
         // Check localStorage or default to 'en'
         return localStorage.getItem('language') || 'en';
     });
 
     useEffect(() => {
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        if (isMobile) {
-            setLanguage('en');
-            localStorage.setItem('language', 'en');
-            return;
-        }
         localStorage.setItem('language', language);
         // Optional: Update html lang attribute
         document.documentElement.lang = language;
@@ -27,6 +17,10 @@ export const LanguageProvider = ({ children }) => {
 
     const toggleLanguage = () => {
         setLanguage((prev) => (prev === 'en' ? 'id' : 'en'));
+    };
+
+    const changeLanguage = (lang) => {
+        setLanguage(lang);
     };
 
     const t = (key) => {
@@ -39,7 +33,7 @@ export const LanguageProvider = ({ children }) => {
     };
 
     return (
-        <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+        <LanguageContext.Provider value={{ language, toggleLanguage, setLanguage: changeLanguage, t }}>
             {children}
         </LanguageContext.Provider>
     );

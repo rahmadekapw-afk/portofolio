@@ -71,7 +71,7 @@ const Comment = memo(({
                             <div className={`p-2 md:p-3 rounded-full ${isAdmin
                                 ? 'bg-black text-white dark:bg-white dark:text-black'
                                 : comment.user_name === 'Gemini AI'
-                                    ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                                    ? 'bg-zinc-800 text-white dark:bg-zinc-200 dark:text-black'
                                     : 'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-gray-400'
                                 }`}>
                                 {comment.user_name === 'Gemini AI' ? <Sparkles className="w-5 h-5 md:w-6 md:h-6" /> : <UserCircle2 className="w-5 h-5 md:w-6 md:h-6" />}
@@ -91,7 +91,7 @@ const Comment = memo(({
                                     </span>
                                 )}
                                 {comment.user_name === 'Gemini AI' && (
-                                    <span className="px-2 py-0.5 text-[8px] md:text-[10px] bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 font-bold uppercase tracking-wider rounded-full flex items-center gap-1">
+                                    <span className="px-2 py-0.5 text-[8px] md:text-[10px] bg-zinc-800 text-white dark:bg-zinc-200 dark:text-black font-bold uppercase tracking-wider rounded-full flex items-center gap-1">
                                         <Sparkles className="w-3 h-3" /> AI
                                     </span>
                                 )}

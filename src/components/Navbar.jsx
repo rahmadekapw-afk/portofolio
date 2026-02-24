@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Menu, X, Sun, Moon, Globe } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
@@ -18,43 +18,70 @@ const Navbar = () => {
     const overlayRef = useRef(null);
     const overlayContentRef = useRef(null);
 
-    const navItems = [
+    const [isVisible, setIsVisible] = useState(true);
+    const lastScrollY = useRef(0);
+
+    const navItems = useMemo(() => [
         { href: "#Home", label: t('nav.home') },
         { href: "#About", label: t('nav.about') },
         { href: "#Portofolio", label: t('nav.projects') },
         { href: "#Contact", label: t('nav.contact') },
-    ];
+    ], [t]);
+
+    const handleScroll = useCallback(() => {
+        const currentPosition = window.scrollY;
+
+        // 1. Set Scrolled state (for background/blur)
+        setScrolled(currentPosition > 20);
+
+        // 2. Visibility Logic (Nike Style) with Threshold
+        const diff = currentPosition - lastScrollY.current;
+
+        if (currentPosition <= 10) {
+            // Strictly at the very top: Always visible
+            setIsVisible(true);
+            lastScrollY.current = currentPosition;
+        } else if (Math.abs(diff) > 10) {
+            // Only update visibility if scroll movement is significant (>10px)
+            if (diff > 0) {
+                // Scrolling Down: Hide
+                setIsVisible(false);
+            } else {
+                // Scrolling Up: Show
+                setIsVisible(true);
+            }
+            lastScrollY.current = currentPosition;
+        }
+
+        // 3. Active Section Logic
+        const sections = navItems.map(item => {
+            const section = document.querySelector(item.href);
+            if (section) {
+                return {
+                    id: item.href.replace("#", ""),
+                    offset: section.offsetTop - 550,
+                    height: section.offsetHeight
+                };
+            }
+            return null;
+        }).filter(Boolean);
+
+        const active = sections.find(section =>
+            currentPosition >= section.offset &&
+            currentPosition < section.offset + section.height
+        );
+
+        if (active) {
+            setActiveSection(active.id);
+        }
+    }, [navItems]);
 
     useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
-            const sections = navItems.map(item => {
-                const section = document.querySelector(item.href);
-                if (section) {
-                    return {
-                        id: item.href.replace("#", ""),
-                        offset: section.offsetTop - 550,
-                        height: section.offsetHeight
-                    };
-                }
-                return null;
-            }).filter(Boolean);
-
-            const currentPosition = window.scrollY;
-            const active = sections.find(section =>
-                currentPosition >= section.offset &&
-                currentPosition < section.offset + section.height
-            );
-
-            if (active) {
-                setActiveSection(active.id);
-            }
-        };
-
-        window.addEventListener("scroll", handleScroll);
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        // Initial call to set states correctly
         handleScroll();
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [navItems]);
+    }, [handleScroll]);
 
     useEffect(() => {
         if (isOpen) {
@@ -94,9 +121,48 @@ const Navbar = () => {
     }, [isOpen]);
 
     useEffect(() => {
-        // Simple Navbar shadow/background transition based on scroll
-        // Removed hiding logic to satisfy user request
-    }, [scrolled, isOpen]);
+        // Navbar & FAB Animation based on scroll and visibility
+        const ctx = gsap.context(() => {
+            if (isOpen) return;
+
+            if (isVisible) {
+                // Show Navbar, Hide FAB
+                gsap.to(navRef.current, {
+                    y: 0,
+                    autoAlpha: 1,
+                    duration: 0.5,
+                    ease: "power3.out",
+                    overwrite: "auto"
+                });
+                gsap.to(fabRef.current, {
+                    scale: 0,
+                    autoAlpha: 0,
+                    duration: 0.3,
+                    ease: "power2.in",
+                    overwrite: "auto"
+                });
+            } else {
+                // Hide Navbar, Show FAB
+                gsap.to(navRef.current, {
+                    y: -100,
+                    autoAlpha: 0,
+                    duration: 0.5,
+                    ease: "power3.in",
+                    overwrite: "auto"
+                });
+                gsap.to(fabRef.current, {
+                    scale: 1,
+                    autoAlpha: 1,
+                    duration: 0.4,
+                    ease: "back.out(1.7)",
+                    delay: 0.1,
+                    overwrite: "auto"
+                });
+            }
+        });
+
+        return () => ctx.revert();
+    }, [isVisible, isOpen]);
 
     const scrollToSection = (e, href) => {
         e.preventDefault();
@@ -116,7 +182,7 @@ const Navbar = () => {
             {/* Main Navbar */}
             <nav
                 ref={navRef}
-                className={`fixed w-full top-0 z-50 transition-all duration-300 ${!scrolled ? "bg-transparent" : "bg-white/80 dark:bg-black/80 border-b border-gray-200 dark:border-zinc-800 backdrop-blur-md"
+                className={`fixed w-full top-0 z-50 ${!scrolled ? "bg-transparent" : "bg-white/80 dark:bg-black/80 border-b border-gray-200 dark:border-zinc-800 backdrop-blur-md"
                     }`}
                 style={{
                     paddingTop: 'env(safe-area-inset-top)',
@@ -162,10 +228,10 @@ const Navbar = () => {
                             <div className="flex items-center gap-4">
                                 <button
                                     onClick={toggleLanguage}
-                                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700 font-bold font-oswald w-10 h-10 flex items-center justify-center text-sm"
+                                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700 font-bold font-oswald w-10 h-10 flex items-center justify-center text-sm shadow-sm hover:scale-105 active:scale-95"
                                     aria-label="Toggle Language"
                                 >
-                                    {language.toUpperCase()}
+                                    {language === 'en' ? 'ID' : 'EN'}
                                 </button>
                                 <button
                                     onClick={toggleTheme}
@@ -187,9 +253,9 @@ const Navbar = () => {
                         <div className="md:hidden flex items-center gap-2 sm:gap-4">
                             <button
                                 onClick={toggleLanguage}
-                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700 font-bold font-oswald w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs sm:text-sm"
+                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 text-black dark:text-white border border-gray-200 dark:border-zinc-700 font-bold font-oswald w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs sm:text-sm shadow-sm active:scale-95"
                             >
-                                {language.toUpperCase()}
+                                {language === 'en' ? 'ID' : 'EN'}
                             </button>
                             <button
                                 onClick={toggleTheme}
@@ -208,7 +274,20 @@ const Navbar = () => {
                 </div>
             </nav>
 
-            {/* FAB Removed per user request to keep main navbar visible */}
+            {/* Floating Action Button */}
+            <motion.div
+                ref={fabRef}
+                className="fixed top-6 right-[5%] z-[60] opacity-0 scale-0"
+                style={{ marginTop: 'env(safe-area-inset-top)' }}
+            >
+                <MagneticButton
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="p-3 rounded-full bg-white dark:bg-black text-black dark:text-white shadow-lg border border-gray-200 dark:border-zinc-800 cursor-pointer"
+                    aria-label="Open Menu"
+                >
+                    <Menu className="w-6 h-6" />
+                </MagneticButton>
+            </motion.div>
 
             {/* Universal Overlay Menu */}
             <div
@@ -219,10 +298,10 @@ const Navbar = () => {
                 {/* Language Toggle - Top Left */}
                 <button
                     onClick={toggleLanguage}
-                    className="absolute top-6 left-[5%] p-3 text-lg font-oswald font-bold text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors z-[80]"
+                    className="absolute top-6 left-[5%] p-3 text-lg font-oswald font-bold text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors z-[80] border-2 border-black/10 dark:border-white/10 rounded-full w-12 h-12 flex items-center justify-center active:scale-90"
                     style={{ marginTop: 'env(safe-area-inset-top)' }}
                 >
-                    {language.toUpperCase()}
+                    {language === 'en' ? 'ID' : 'EN'}
                 </button>
 
                 {/* Close Button */}
@@ -245,7 +324,7 @@ const Navbar = () => {
                             key={item.label}
                             href={item.href}
                             onClick={(e) => scrollToSection(e, item.href)}
-                            className={`text-5xl md:text-6xl font-oswald font-bold uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 hover:from-blue-600 hover:to-blue-400 dark:hover:from-blue-400 dark:hover:to-blue-600 transition-colors duration-300 ${activeSection === item.href.substring(1) ? "opacity-100" : "opacity-50 hover:opacity-100"
+                            className={`text-5xl md:text-6xl font-oswald font-bold uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 hover:from-black hover:to-gray-600 dark:hover:from-white dark:hover:to-gray-300 transition-colors duration-300 ${activeSection === item.href.substring(1) ? "opacity-100" : "opacity-50 hover:opacity-100"
                                 }`}
                         >
                             {item.label}
