@@ -75,7 +75,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen pb-12 pt-12 md:pb-20 md:pt-20 px-[5%] md:px-[10%] overflow-hidden bg-gray-50 dark:bg-black text-black dark:text-white" id="Contact">
+    <div className="relative min-h-screen pb-12 md:pb-20 px-[5%] md:px-[10%] overflow-hidden bg-gray-50 dark:bg-black text-black dark:text-white" id="Contact">
 
       {/* Header Section - Nike Style: Big, Bold, Uppercase */}
       <div className="text-center mb-12 md:mb-20">

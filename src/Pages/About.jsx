@@ -45,13 +45,15 @@ const LocationBadge = memo(() => {
 const Header = memo(() => {
   const { t } = useLanguage();
   return (
-    <div className="text-center pb-8 pt-12 md:pb-12 md:pt-20 portfolio-header">
-      <h2 className="text-3xl md:text-5xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white mb-4">
+    <div className="text-center pb-4 md:pb-8 portfolio-header">
+      <h2
+        className="text-3xl md:text-5xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white mb-4"
+        data-aos="fade-down"
+        data-aos-duration="600"
+      >
         {t('about.title')}
       </h2>
-      <p className="text-gray-500 font-medium tracking-wide uppercase text-xs md:text-base max-w-2xl mx-auto px-4">
-        {t('about.subtitle')}
-      </p>
+      <div className="w-16 md:w-24 h-1.5 md:h-2 bg-black dark:bg-white mx-auto"></div>
     </div>
   );
 })
@@ -192,7 +194,7 @@ const AboutPage = () => {
   ]
 
   return (
-    <div className="pb-20 pt-20 bg-transparent text-black dark:text-white px-[5%] lg:px-[10%]" id="About">
+    <div className="pb-12 pt-12 md:pb-20 md:pt-20 bg-transparent text-black dark:text-white px-[5%] lg:px-[10%]" id="About">
       <Header />
 
       <div className="grid lg:grid-cols-2 gap-16 items-center mt-10">
