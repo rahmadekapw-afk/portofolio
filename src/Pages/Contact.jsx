@@ -75,19 +75,19 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen pb-20 pt-20 px-[5%] md:px-[10%] overflow-hidden bg-gray-50 dark:bg-black text-black dark:text-white" id="Contact">
+    <div className="relative min-h-screen pb-12 pt-12 md:pb-20 md:pt-20 px-[5%] md:px-[10%] overflow-hidden bg-gray-50 dark:bg-black text-black dark:text-white" id="Contact">
 
       {/* Header Section - Nike Style: Big, Bold, Uppercase */}
-      <div className="text-center mb-20">
+      <div className="text-center mb-12 md:mb-20">
         <h2
           data-aos="fade-down"
-          className="text-4xl md:text-5xl font-oswald font-black uppercase tracking-tighter mb-4 text-black dark:text-white"
+          className="text-3xl md:text-5xl font-oswald font-black uppercase tracking-tighter mb-4 text-black dark:text-white"
         >
           {t('contact.title')}
         </h2>
         <p
           data-aos="fade-up"
-          className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto text-base font-medium tracking-wide uppercase"
+          className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto text-xs md:text-base font-medium tracking-wide uppercase px-4"
         >
           {t('contact.subtitle')}
         </p>
