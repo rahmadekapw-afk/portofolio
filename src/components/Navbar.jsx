@@ -148,8 +148,11 @@ const Navbar = () => {
             {/* Main Navbar */}
             <nav
                 ref={navRef}
-                className={`fixed w-full top-0 z-50 transition-colors duration-300 ${!scrolled ? "bg-transparent" : "bg-white dark:bg-black border-b border-gray-200 dark:border-zinc-800"
+                className={`fixed w-full top-0 z-50 transition-colors duration-300 ${!scrolled ? "bg-transparent" : "bg-white/80 dark:bg-black/80 border-b border-gray-200 dark:border-zinc-800 backdrop-blur-md -webkit-backdrop-filter:blur(12px)"
                     }`}
+                style={{
+                    paddingTop: 'env(safe-area-inset-top)',
+                }}
             >
                 <div className="mx-auto px-[5%] sm:px-[5%] lg:px-[10%]">
                     <div className="flex items-center justify-between h-20">
@@ -253,12 +256,13 @@ const Navbar = () => {
             {/* Universal Overlay Menu */}
             <div
                 ref={overlayRef}
-                className="fixed inset-0 z-[70] bg-white/95 dark:bg-black/95 backdrop-blur-md opacity-0 invisible"
+                className="fixed inset-0 z-[70] bg-white/95 dark:bg-black/95 backdrop-blur-md -webkit-backdrop-filter:blur(20px) opacity-0 invisible"
             >
                 {/* Language Toggle - Top Left */}
                 <button
                     onClick={toggleLanguage}
                     className="absolute top-6 left-[5%] p-3 text-lg font-oswald font-bold text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors z-[80]"
+                    style={{ marginTop: 'env(safe-area-inset-top)' }}
                 >
                     {language.toUpperCase()}
                 </button>
@@ -267,6 +271,7 @@ const Navbar = () => {
                 <button
                     onClick={() => setIsOpen(false)}
                     className="absolute top-6 right-[5%] p-3 rounded-full bg-transparent text-black dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors duration-300 z-[80]"
+                    style={{ marginTop: 'env(safe-area-inset-top)' }}
                     aria-label="Close Menu"
                 >
                     <X className="w-8 h-8" />

@@ -30,10 +30,10 @@ const TechStack = memo(({ tech }) => (
 ));
 
 const CTAButton = memo(({ href, text, icon: Icon }) => (
-  <MagneticButton href={href} className="group relative w-[160px] h-12 bg-black dark:bg-white overflow-hidden rounded-full transition-all hover:scale-105 active:scale-95 inline-block">
-    <div className="absolute inset-0 flex items-center justify-center gap-2 text-white dark:text-black font-oswald font-bold uppercase tracking-widest z-10">
-      {text}
-      <Icon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+  <MagneticButton href={href} className="group relative min-w-[140px] sm:w-[160px] h-12 bg-black dark:bg-white overflow-hidden rounded-full transition-all hover:scale-105 active:scale-95 inline-block">
+    <div className="absolute inset-0 flex items-center justify-center gap-2 px-4 text-white dark:text-black font-oswald font-bold uppercase tracking-widest z-10">
+      <span className="text-xs sm:text-sm whitespace-nowrap">{text}</span>
+      <Icon className="w-4 h-4 transition-transform group-hover:translate-x-1 flex-shrink-0" />
     </div>
   </MagneticButton>
 ));
@@ -130,7 +130,7 @@ const Home = () => {
               <div className="space-y-6">
                 <StatusBadge />
                 <div className="space-y-1" data-aos="fade-up" data-aos-delay="600">
-                  <h1 className="text-5xl sm:text-6xl md:text-8xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white leading-[0.9]">
+                  <h1 className="text-4xl sm:text-6xl md:text-8xl font-oswald font-black uppercase tracking-tighter text-black dark:text-white leading-[0.9] break-words">
                     {t('hero.title')}
                     <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-b from-black to-gray-400 dark:from-white dark:to-zinc-500">
@@ -162,7 +162,7 @@ const Home = () => {
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-row gap-4 w-full justify-start mt-8" data-aos="fade-up" data-aos-delay="1400">
+                <div className="flex flex-wrap gap-4 w-full justify-start mt-8" data-aos="fade-up" data-aos-delay="1400">
                   <CTAButton href="#Portofolio" text={t('hero.ctaProjects')} icon={ExternalLink} />
                   <CTAButton href="#Contact" text={t('hero.ctaContact')} icon={Mail} />
                 </div>

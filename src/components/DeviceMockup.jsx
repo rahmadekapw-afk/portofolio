@@ -29,12 +29,12 @@ const DeviceMockup = ({ type, image }) => {
     }
 
     return (
-        <div className="relative mx-auto w-[280px] perspective-1000">
+        <div className="relative mx-auto w-full max-w-[280px] perspective-1000">
             <div className="relative transition-transform duration-500 transform-gpu rotate-y-[15deg] rotate-x-[5deg] hover:rotate-0 group">
                 {/* Phone Frame */}
-                <div className="relative bg-zinc-900 rounded-[3rem] p-3 shadow-2xl border-[3px] border-zinc-700 h-[560px]">
+                <div className="relative bg-zinc-900 rounded-[2.5rem] sm:rounded-[3rem] p-2 sm:p-3 shadow-2xl border-[3px] border-zinc-700 aspect-[9/18.5] w-full max-h-[560px]">
                     {/* Internal Screen */}
-                    <div className="relative w-full h-full overflow-hidden rounded-[2.2rem] bg-black">
+                    <div className="relative w-full h-full overflow-hidden rounded-[1.8rem] sm:rounded-[2.2rem] bg-black">
                         <img
                             src={image}
                             className="w-full h-full object-cover"
@@ -42,7 +42,7 @@ const DeviceMockup = ({ type, image }) => {
                         />
 
                         {/* Dynamic Island */}
-                        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full flex items-center justify-end px-3">
+                        <div className="absolute top-3 sm:top-4 left-1/2 -translate-x-1/2 w-20 sm:w-24 h-5 sm:h-6 bg-black rounded-full flex items-center justify-end px-3">
                             <div className="w-1.5 h-1.5 rounded-full bg-zinc-800" />
                         </div>
 
@@ -51,9 +51,9 @@ const DeviceMockup = ({ type, image }) => {
                     </div>
 
                     {/* Side Buttons */}
-                    <div className="absolute left-[-4px] top-24 w-1 h-12 bg-zinc-700 rounded-l" />
-                    <div className="absolute left-[-4px] top-40 w-1 h-12 bg-zinc-700 rounded-l" />
-                    <div className="absolute right-[-4px] top-32 w-1 h-16 bg-zinc-700 rounded-r" />
+                    <div className="absolute left-[-4px] top-24 w-1 h-10 sm:h-12 bg-zinc-700 rounded-l" />
+                    <div className="absolute left-[-4px] top-36 sm:top-40 w-1 h-10 sm:h-12 bg-zinc-700 rounded-l" />
+                    <div className="absolute right-[-4px] top-28 sm:top-32 w-1 h-14 sm:h-16 bg-zinc-700 rounded-r" />
                 </div>
             </div>
         </div>
