@@ -194,7 +194,7 @@ const AboutPage = () => {
   ]
 
   return (
-    <div className="pb-12 pt-12 md:pb-20 md:pt-20 bg-transparent text-black dark:text-white px-[5%] lg:px-[10%]" id="About">
+    <div className="pb-12 pt-0 md:pb-20 md:pt-0 bg-transparent text-black dark:text-white px-[5%] lg:px-[10%]" id="About">
       <Header />
 
       <div className="grid lg:grid-cols-2 gap-16 items-center mt-10">
