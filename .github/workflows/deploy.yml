@@ -23,26 +23,45 @@ jobs:
         id: resolve_ip
         run: |
           SERVER="${{ secrets.FTP_SERVER }}"
-          echo "Resolving: $SERVER"
+          echo "==== DIAGNOSTICS FOR: $SERVER ===="
+
+          # Check if input is already IPv4
           if [[ $SERVER =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Input is already an IPv4 address."
             echo "ip=$SERVER" >> $GITHUB_OUTPUT
-            echo "Using provided IP: $SERVER"
-          else
-            # Try to get IPv4 address
-            IP=$(getent hosts "$SERVER" | awk '{print $1}' | grep -E '^[0-9]+\.' | head -n 1)
-            if [ -z "$IP" ]; then
-              IP=$(nslookup "$SERVER" | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}' | head -n 1)
-            fi
-            
-            # Fallback to original hostname if resolution fails
-            if [ -z "$IP" ]; then
-              echo "Warning: Could not resolve IPv4. Falling back to hostname."
-              IP="$SERVER"
-            fi
-            
-            echo "ip=$IP" >> $GITHUB_OUTPUT
-            echo "Resolved to: $IP"
+            exit 0
           fi
+
+          # Try multiple ways to get IPv4 only
+          echo "Checking A records (IPv4)..."
+
+          # Method 1: dig
+          IP=$(dig +short A "$SERVER" | grep -E '^[0-9]+\.' | head -n 1)
+          [ ! -z "$IP" ] && echo "Found via dig: $IP"
+
+          # Method 2: nslookup fallback
+          if [ -z "$IP" ]; then
+            IP=$(nslookup "$SERVER" | grep -A 1 "Name:" | grep "Address:" | grep -E '[0-9]+\.' | awk '{print $2}' | head -n 1)
+            [ ! -z "$IP" ] && echo "Found via nslookup: $IP"
+          fi
+
+          # Method 3: host fallback
+          if [ -z "$IP" ]; then
+            IP=$(host -t A "$SERVER" | grep "has address" | awk '{print $4}' | head -n 1)
+            [ ! -z "$IP" ] && echo "Found via host: $IP"
+          fi
+
+          # Final Check and Output
+          if [ -z "$IP" ]; then
+            echo "CRITICAL: Could not find any IPv4 (A) record for $SERVER."
+            echo "DNS might only return IPv6 (AAAA) or the host is invalid."
+            echo "Falling back to original hostname (this will likely fail with IPv6)."
+            IP="$SERVER"
+          fi
+
+          echo "FINAL SELECTION: $IP"
+          echo "ip=$IP" >> $GITHUB_OUTPUT
+          echo "==== END DIAGNOSTICS ===="
 
       - name: Upload to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
