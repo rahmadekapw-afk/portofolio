@@ -19,10 +19,26 @@ jobs:
       - run: npm install
       - run: npm run build
 
+      - name: Resolve IPv4
+        id: resolve_ip
+        run: |
+          SERVER="${{ secrets.FTP_SERVER }}"
+          if [[ $SERVER =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "ip=$SERVER" >> $GITHUB_OUTPUT
+          else
+            IP=$(dig +short A "$SERVER" | grep -E '^[0-9]+\.' | head -n 1)
+            [ -z "$IP" ] && IP=$(nslookup -type=A "$SERVER" | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}' | head -n 1)
+            echo "ip=$IP" >> $GITHUB_OUTPUT
+          fi
+
       - name: Upload to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
+<<<<<<< HEAD
           server: 202.10.43.172
+=======
+          server: ${{ steps.resolve_ip.outputs.ip }}
+>>>>>>> 0a2deee (fix: re-apply robust IPv4 resolution for FTP deploy)
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
