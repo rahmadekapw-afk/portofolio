@@ -116,6 +116,7 @@ CREATE TABLE public.portfolio_comments (
   user_name VARCHAR(255) NOT NULL,
   profile_image TEXT,
   is_pinned BOOLEAN DEFAULT FALSE,
+  parent_id UUID REFERENCES public.portfolio_comments(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -142,6 +143,9 @@ ON public.portfolio_comments FOR SELECT TO public USING (true);
 
 CREATE POLICY "Allow public insert on portfolio_comments"
 ON public.portfolio_comments FOR INSERT TO public WITH CHECK (is_pinned = false);
+
+CREATE POLICY "Allow public delete on portfolio_comments"
+ON public.portfolio_comments FOR DELETE TO public USING (true);
 
 -- ---- STORAGE SETUP FOR COMMENT PROFILE IMAGES ----
 
