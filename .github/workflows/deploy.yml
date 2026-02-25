@@ -27,8 +27,8 @@ jobs:
       - name: Debug DNS
         run: |
           echo "Resolving FTP Server..."
-          nslookup ftp.rahmadeka.com || echo "nslookup failed"
-          ping -c 1 ftp.rahmadeka.com || echo "Ping failed"
+          nslookup ${{ secrets.FTP_SERVER }} || echo "nslookup failed"
+          ping -c 1 ${{ secrets.FTP_SERVER }} || echo "Ping failed"
 
       - name: Upload to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
