@@ -24,14 +24,23 @@ jobs:
       - name: Build Project
         run: npm run build
 
-      - name: Upload to cPanel via FTPS
+      - name: Debug DNS
+        run: |
+          echo "Resolving FTP Server..."
+          nslookup ftp.rahmadeka.com || echo "nslookup failed"
+          ping -c 1 ftp.rahmadeka.com || echo "Ping failed"
+
+      - name: Upload to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        env:
+          NODE_OPTIONS: "--dns-result-order=ipv4first"
         with:
-          server: ftp.rahmadeka.com
+          server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
+          protocol: ftp
           port: 21
           local-dir: dist/
           server-dir: public_html/
-          dangerous-clean-slate: true
+          dangerous-clean-slate: false
+          log-level: verbose
