@@ -6,51 +6,27 @@ on:
       - main
 
 jobs:
-  build-and-upload:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build Project
-        run: npm run build
-
-      - name: Force IPv4 Resolution
-        id: resolve_ip
-        run: |
-          SERVER="${{ secrets.FTP_SERVER }}"
-          echo "SERVER_INPUT=$SERVER"
-          if [[ $SERVER =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "server_ip=$SERVER" >> $GITHUB_OUTPUT
-            echo "Already an IP address: $SERVER"
-          else
-            # Try to get only the IPv4 address
-            IP=$(dig +short A "$SERVER" | grep -E '^[0-9]+\.' | head -n 1)
-            if [ -z "$IP" ]; then
-              IP=$(nslookup -type=A "$SERVER" | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}' | head -n 1)
-            fi
-            echo "Resolved $SERVER to $IP"
-            echo "server_ip=$IP" >> $GITHUB_OUTPUT
-          fi
+      - run: npm install
+      - run: npm run build
 
       - name: Upload to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ steps.resolve_ip.outputs.server_ip }}
+          server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
           port: 21
           local-dir: dist/
           server-dir: public_html/
-          dangerous-clean-slate: false
-          log-level: verbose
+          dangerous-clean-slate: true
