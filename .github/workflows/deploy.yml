@@ -24,18 +24,28 @@ jobs:
       - name: Build Project
         run: npm run build
 
-      - name: Debug DNS
+      - name: Force IPv4 Resolution
+        id: resolve_ip
         run: |
-          echo "Resolving FTP Server..."
-          nslookup ${{ secrets.FTP_SERVER }} || echo "nslookup failed"
-          ping -c 1 ${{ secrets.FTP_SERVER }} || echo "Ping failed"
+          SERVER="${{ secrets.FTP_SERVER }}"
+          echo "SERVER_INPUT=$SERVER"
+          if [[ $SERVER =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "server_ip=$SERVER" >> $GITHUB_OUTPUT
+            echo "Already an IP address: $SERVER"
+          else
+            # Try to get only the IPv4 address
+            IP=$(dig +short A "$SERVER" | grep -E '^[0-9]+\.' | head -n 1)
+            if [ -z "$IP" ]; then
+              IP=$(nslookup -type=A "$SERVER" | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}' | head -n 1)
+            fi
+            echo "Resolved $SERVER to $IP"
+            echo "server_ip=$IP" >> $GITHUB_OUTPUT
+          fi
 
       - name: Upload to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        env:
-          NODE_OPTIONS: "--dns-result-order=ipv4first"
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          server: ${{ steps.resolve_ip.outputs.server_ip }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
