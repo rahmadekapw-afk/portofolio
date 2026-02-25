@@ -34,11 +34,7 @@ jobs:
       - name: Upload to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-<<<<<<< HEAD
-          server: 202.10.43.172
-=======
           server: ${{ steps.resolve_ip.outputs.ip }}
->>>>>>> 0a2deee (fix: re-apply robust IPv4 resolution for FTP deploy)
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
