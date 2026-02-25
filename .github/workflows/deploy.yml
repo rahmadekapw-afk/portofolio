@@ -10,72 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - run: npm install
-      - name: Build
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
         run: npm run build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
-
-      - name: Prefer IPv4
-        run: |
-          sudo sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
-
-      - name: Resolve IPv4
-        id: resolve_ip
-        run: |
-          SERVER="${{ secrets.FTP_SERVER }}"
-          echo "==== DIAGNOSTICS FOR: $SERVER ===="
-
-          # Check if input is already IPv4
-          if [[ $SERVER =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Input is already an IPv4 address."
-            echo "ip=$SERVER" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # Try multiple ways to get IPv4 only
-          echo "Checking A records (IPv4)..."
-
-          # Method 1: dig
-          IP=$(dig +short A "$SERVER" | grep -E '^[0-9]+\.' | head -n 1)
-          [ ! -z "$IP" ] && echo "Found via dig: $IP"
-
-          # Method 2: nslookup fallback
-          if [ -z "$IP" ]; then
-            IP=$(nslookup "$SERVER" | grep -A 1 "Name:" | grep "Address:" | grep -E '[0-9]+\.' | awk '{print $2}' | head -n 1)
-            [ ! -z "$IP" ] && echo "Found via nslookup: $IP"
-          fi
-
-          # Method 3: host fallback
-          if [ -z "$IP" ]; then
-            IP=$(host -t A "$SERVER" | grep "has address" | awk '{print $4}' | head -n 1)
-            [ ! -z "$IP" ] && echo "Found via host: $IP"
-          fi
-
-          # Final Check and Output
-          if [ -z "$IP" ]; then
-            echo "CRITICAL: Could not find any IPv4 (A) record for $SERVER."
-            echo "DNS might only return IPv6 (AAAA) or the host is invalid."
-            echo "Falling back to original hostname (this will likely fail with IPv6)."
-            IP="$SERVER"
-          fi
-
-          echo "FINAL SELECTION: $IP"
-          echo "ip=$IP" >> $GITHUB_OUTPUT
-          echo "==== END DIAGNOSTICS ===="
 
       - name: Upload to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ steps.resolve_ip.outputs.ip }}
+          server: 202.10.43.172 # ← GANTI dengan IPv4 hosting kamu
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
