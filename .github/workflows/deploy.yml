@@ -23,12 +23,25 @@ jobs:
         id: resolve_ip
         run: |
           SERVER="${{ secrets.FTP_SERVER }}"
+          echo "Resolving: $SERVER"
           if [[ $SERVER =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "ip=$SERVER" >> $GITHUB_OUTPUT
+            echo "Using provided IP: $SERVER"
           else
-            IP=$(dig +short A "$SERVER" | grep -E '^[0-9]+\.' | head -n 1)
-            [ -z "$IP" ] && IP=$(nslookup -type=A "$SERVER" | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}' | head -n 1)
+            # Try to get IPv4 address
+            IP=$(getent hosts "$SERVER" | awk '{print $1}' | grep -E '^[0-9]+\.' | head -n 1)
+            if [ -z "$IP" ]; then
+              IP=$(nslookup "$SERVER" | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}' | head -n 1)
+            fi
+            
+            # Fallback to original hostname if resolution fails
+            if [ -z "$IP" ]; then
+              echo "Warning: Could not resolve IPv4. Falling back to hostname."
+              IP="$SERVER"
+            fi
+            
             echo "ip=$IP" >> $GITHUB_OUTPUT
+            echo "Resolved to: $IP"
           fi
 
       - name: Upload to cPanel via FTP
