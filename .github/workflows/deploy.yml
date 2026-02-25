@@ -23,11 +23,29 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
+
+      - name: Prefer IPv4
+        run: |
+          sudo sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
+
+      - name: Resolve IPv4
+        id: resolve_ip
+        run: |
+          SERVER="${{ secrets.FTP_SERVER }}"
+          echo "Resolving: $SERVER"
+          IP=$(getent ahosts "$SERVER" | grep -v ":" | grep -E '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | awk '{print $1}' | head -n 1)
+          if [ -z "$IP" ]; then IP="202.10.43.172"; fi
+          echo "ip=$IP" >> $GITHUB_OUTPUT
+          echo "Selected: $IP"
 
       - name: Upload to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: 202.10.43.172 # ← GANTI dengan IPv4 hosting kamu
+          server: ${{ steps.resolve_ip.outputs.ip }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
